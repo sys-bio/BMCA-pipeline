@@ -95,41 +95,31 @@ class BMCA():
         return N, v_star, en, xn, yn, vn
     
     def create_Visser_elasticity_matrix(model_file, Ex=True):
-        """Create an elasticity matrix for internal metabolites given the model in model.
-
+        """Create an elasticity matrix for metabolites given the model in model.
         E[j,i] represents the elasticity of reaction j for metabolite i.
-
         """
         r = te.loada(model_file)
-        # convert from antimony to sbml
-        doc = libsbml.readSBMLFromString(r.getSBML())
-        model = doc.getModel()
-
-        if Ex: 
-            m_list = r.getFloatingSpeciesIds()
-            n_metabolites = len(r.getFloatingSpeciesIds())
-        else:
-            m_list = r.getBoundarySpeciesIds()
-            n_metabolites = len(r.getBoundarySpeciesIds())
-        n_reactions = len(r.getReactionIds())
-        array = np.zeros((n_reactions, n_metabolites), dtype=float)
-
-        for n in range(n_reactions): 
-            rxn = model.getReaction(n)
-            for reactant in range(rxn.getNumReactants()):                 
-                metabolite = rxn.getReactant(reactant).species
-                stoich = rxn.getReactant(reactant).getStoichiometry()
-                if metabolite in m_list: 
-                    # Reversible reaction, assign all elements to -stoich
-                    if rxn.getReversible(): 
-                        array[n, m_list.index(metabolite)] = -np.sign(stoich)
-
-                    # Irreversible in forward direction, only assign if met is reactant
-                    elif ((not rxn.getReversible()) & (stoich < 0)):
-                        array[n, m_list.index(metabolite)] = -np.sign(stoich)
-            
-                    # Irreversible in forward direction, only assign if met is reactant
-                    elif ((not rxn.getReversible()) & (stoich > 0)): 
-                        array[n, m_list.index(metabolite)] = -np.sign(stoich)
         
+        if Ex:
+            array = -(r.getFullStoichiometryMatrix()).T
+        else: 
+            doc = libsbml.readSBMLFromString(r.getSBML())
+            model = doc.getModel()
+            
+            rxns = r.getReactionIds()
+            bd_sp = r.getBoundarySpeciesIds()
+            
+            array = np.zeros((len(rxns), len(bd_sp)))
+            for n in range(len(rxns)): 
+                rxn = model.getReaction(n)
+                for reactant in range(rxn.getNumReactants()):                 
+                    sp = rxn.getReactant(reactant).species
+                    stoich = rxn.getReactant(reactant).getStoichiometry()
+                    if sp in bd_sp: 
+                        array[n, bd_sp.index(sp)] = -np.sign(stoich)
+                for prod in range(rxn.getNumProducts()):
+                    sp = rxn.getProduct(prod).species
+                    stoich = rxn.getProduct(prod).getStoichiometry()
+                    if sp in bd_sp: 
+                        array[n, bd_sp.index(sp)] = -np.sign(stoich)
         return array
