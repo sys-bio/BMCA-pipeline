@@ -18,7 +18,7 @@ pd.set_option('display.max_rows', None)
 from csv import writer
 
 # math/stats
-import scipy
+import scipy as sp
 import scipy.stats
 
 # biochemical pathway simulators
@@ -41,6 +41,8 @@ class BMCA():
             f.write(s.getSBML())
         model = cobra.io.read_sbml_model("temp.txt")
         os.remove("temp.txt") """
+        
+        self.n_exp = self.en.shape[0]
 
         self.Ex = BMCA.create_Visser_elasticity_matrix(model_file)
         self.Ey = BMCA.create_Visser_elasticity_matrix(model_file, Ex=False)
@@ -59,8 +61,8 @@ class BMCA():
         enzymes = ['e_' + i for i in r.getReactionIds()]
         e = data[enzymes]
         x = data[r.getFloatingSpeciesIds()]
-        # y = data[r.getBoundarySpeciesIds()]
-        y = data[[i for i in r.getBoundarySpeciesIds() if i not in bd_exclude]]
+        y = data[r.getBoundarySpeciesIds()]
+        # y = data[[i for i in r.getBoundarySpeciesIds() if i not in bd_exclude]]
         v = data[['v_' + i for i in r.getReactionIds()]]
 
         # normalizing the data
@@ -123,3 +125,21 @@ class BMCA():
                     if sp in bd_sp: 
                         array[n, bd_sp.index(sp)] = -np.sign(stoich)
         return array
+
+    def calculate_steady_state(self, Ea, Eb):
+        # equation 5 of PSJ's paper
+        v_e = np.diag(np.matmul(self.en, self.v_star.reshape((-1,1))))
+        N_v_e = self.N * v_e
+        A = np.matmul(N_v_e, Ea)
+        
+        inner_v = (np.ones((self.N.shape[1], self.n_exp)) + np.matmul(Eb, self.yn.T))
+        B = -np.matmul(N_v_e, inner_v)
+
+        A_pinv = sp.linalg.pinv(A)
+        chi = np.matmul(A_pinv, B)
+        
+        v_hat = np.diag(np.matmul((np.ones((self.N.shape[1], self.n_exp)) +
+                np.matmul(Ea, chi) +
+                np.matmul(Eb, self.yn.T)), self.en))
+        
+        return chi, v_hat
