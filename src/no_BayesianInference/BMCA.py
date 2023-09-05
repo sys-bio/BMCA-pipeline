@@ -94,8 +94,10 @@ class BMCA():
         N[:, v_star < 0] = -1 * N[:, v_star < 0]
         v_star = np.abs(v_star)
 
+        assert np.isclose(np.all(np.matmul(N, v_star)), 0), "data does not describe steady state"
+        
         yn[yn == 0] = 1E-6
-    
+
         return N, v_star, en, xn, yn, vn
     
     def create_Visser_elasticity_matrix(model_file, Ex=True):
@@ -105,7 +107,7 @@ class BMCA():
         r = te.loada(model_file)
         
         if Ex:
-            array = -(r.getFullStoichiometryMatrix()).T
+            array = -r.getFullStoichiometryMatrix().T
         else: 
             doc = libsbml.readSBMLFromString(r.getSBML())
             model = doc.getModel()
