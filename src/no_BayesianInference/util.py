@@ -9,25 +9,6 @@ import csv
 import numpy as np
 
 
-def calculate_steady_state(Ea, Eb, N, v_star, en, yn):
-        # equation 5 of PSJ's paper
-        v_e = np.diag(np.matmul(v_star, en))
-        N_v_e = np.matmul(N, v_e)
-        A = np.matmul(N_v_e, Ea)
-        
-        inner_v = (np.ones(N.shape[1]) + np.matmul(Eb, yn))
-        B = -np.matmul(N_v_e, inner_v)
-
-        A_pinv = sp.linalg.pinv(A)
-        xn = np.matmul(A_pinv, B)
-        
-        vn = en * (np.ones(N.shape[1]) +
-                   np.matmul(Ea, xn) +
-                   np.matmul(Eb, yn))
-
-        return en, vn
-
-
 def generate_data(model_file, perturbation_levels, data_folder):
     """
     Takes in SBML model_file and creates perturbation data files. 

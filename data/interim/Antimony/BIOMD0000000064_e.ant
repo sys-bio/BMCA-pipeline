@@ -27,7 +27,7 @@ model *Teusink2000_Glycolysis()
   species PEP in cytosol, PYR in cytosol, ACE in cytosol, P in cytosol, NAD in cytosol;
   species NADH in cytosol, $Glyc in cytosol, $Trh in cytosol, $CO2 in cytosol;
   species $SUCC in cytosol, $GLCo in extracellular, $ETOH in cytosol, $GLY in cytosol;
-  species $ATP in cytosol, $ADP in cytosol, $SUM_P in cytosol, $AMP in cytosol;
+  # species $ATP in cytosol, $ADP in cytosol, $SUM_P in cytosol, $AMP in cytosol;
   species $F26BP in cytosol;
 
   // Assignment Rules:
