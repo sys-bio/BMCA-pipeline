@@ -93,6 +93,8 @@ class BMCA():
         # Correct negative flux values at the reference state
         N[:, v_star < 0] = -1 * N[:, v_star < 0]
         v_star = np.abs(v_star)
+
+        yn[yn == 0] = 1E-6
     
         return N, v_star, en, xn, yn, vn
     
@@ -132,7 +134,7 @@ class BMCA():
         N_v_e = self.N * v_e
         A = np.matmul(N_v_e, Ea)
         
-        inner_v = (np.ones((self.N.shape[1], self.n_exp)) + np.matmul(Eb, self.yn.T))
+        inner_v = (np.ones((self.N.shape[1], self.n_exp)) + np.matmul(Eb, np.log(self.yn).T))
         B = -np.matmul(N_v_e, inner_v)
 
         A_pinv = sp.linalg.pinv(A)
