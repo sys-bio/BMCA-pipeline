@@ -33,7 +33,8 @@ class BMCA():
 
     def __init__(self, model_file, data_file, desired_product=None, bd_exclude=[]):
                 
-        self.N, self.v_star, self.en, self.xn, self.yn, self.vn = \
+        self.model_file = model_file
+        self.N, self.v_star, self.en, self.xn, self.yn, self.vn, self.x_star = \
             BMCA.load_model_data(model_file, data_file, desired_product, bd_exclude)
         """
         s = te.loada("models/MODEL1303260011_cobra.ant")
@@ -98,7 +99,7 @@ class BMCA():
         
         yn[yn == 0] = 1E-6
 
-        return N, v_star, en, xn, yn, vn
+        return N, v_star, en, xn, yn, vn, x_star
     
     def create_Visser_elasticity_matrix(model_file, Ex=True):
         """Create an elasticity matrix for metabolites given the model in model.
@@ -107,7 +108,9 @@ class BMCA():
         r = te.loada(model_file)
         
         if Ex:
-            array = -r.getFullStoichiometryMatrix().T
+            array = r.getFullStoichiometryMatrix()# -r.getFullStoichiometryMatrix().T
+            array = -pd.DataFrame(array, columns=r.getReactionIds(), index=r.getFloatingSpeciesIds()).transpose()
+            
         else: 
             doc = libsbml.readSBMLFromString(r.getSBML())
             model = doc.getModel()
@@ -128,9 +131,50 @@ class BMCA():
                     stoich = rxn.getProduct(prod).getStoichiometry()
                     if sp in bd_sp: 
                         array[n, bd_sp.index(sp)] = -np.sign(stoich)
+            array = pd.DataFrame(array, index=r.getReactionIds(), columns=r.getBoundarySpeciesIds())
+
         return array
 
-    def calculate_steady_state(self, Ea, Eb):
+    def calculate_Smallbone_ss(self, Ea, Eb):
+        """
+        As outlined in Smallbone et al. 2007, Equations 6 and 10
+
+        Because compartment volumes usually have a value of 1, I have 
+        simply opted to make np.ones matrices instead of calling on 
+        roadrunner for the compartment volumes.
+
+        """
+        r = te.loada(self.model_file)
+        a = r.getIndependentFloatingSpeciesIds()
+        b = r.getFloatingSpeciesIds()
+        squiggle_idx = [b.index(i) for i in a if i in b]
+        squiggle_idx.sort()
+
+        t1 = np.linalg.inv(np.diag(self.x_star))
+        t2 = np.linalg.inv(np.diag(np.ones(len(self.x_star))))
+        t3 = self.N
+        t4 = np.linalg.pinv(self.N[squiggle_idx,:])
+        t5 = np.diag(np.ones(len(squiggle_idx)))
+        t6 = np.diag(self.x_star[squiggle_idx])
+
+        L = t1 @ t2 @ t3 @ t4 @ t5 @ t6 # link matrix
+
+        # solving for equation 10, steady state internal metabolite concentrations
+        t7 = self.N[squiggle_idx,:]
+        t8 = np.diag(self.v_star)
+
+        t100 = -np.linalg.inv(t7 @ t8 @ Ea @ L) 
+        t101 = t7 @ t8 @ Eb @ np.log10(self.yn).T
+        chi_star = t100 @ t101
+
+        chi_star.rename({1:'met_conc'}, axis=1, inplace=True)
+        res = {squiggle_idx[i]: b[i] for i in range(len(squiggle_idx))}
+        chi_star = chi_star.rename(index=res)# .sort_index()
+
+        return chi_star
+    
+    
+    def calculate_PSJ_ss(self, Ea, Eb):
         # equation 5 of PSJ's paper
         v_e = np.diag(np.matmul(self.en, self.v_star.reshape((-1,1))))
         N_v_e = self.N * v_e
