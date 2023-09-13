@@ -23,7 +23,7 @@ import scipy.stats
 
 # biochemical pathway simulators
 import tellurium as te
-import libsbml
+import libsbml # https://synonym.caltech.edu/software/libsbml/5.18.0/docs/https://synonym.caltech.edu/software/libsbml/5.18.0/docs/formatted/python-api/annotated.html
 import cobra
 
 # plotting
@@ -56,6 +56,7 @@ class BMCA():
         attributes
         """
         r = te.loada(model_file)
+        r.conservedMoietyAnalysis = True
         data = pd.read_csv(data_file)
 
         # sorting the data
@@ -106,6 +107,7 @@ class BMCA():
         E[j,i] represents the elasticity of reaction j for metabolite i.
         """
         r = te.loada(model_file)
+        r.conservedMoietyAnalysis = True
         
         if Ex:
             array = r.getFullStoichiometryMatrix()# -r.getFullStoichiometryMatrix().T
@@ -131,7 +133,8 @@ class BMCA():
                     stoich = rxn.getProduct(prod).getStoichiometry()
                     if sp in bd_sp: 
                         array[n, bd_sp.index(sp)] = -np.sign(stoich)
-            array = pd.DataFrame(array, index=r.getReactionIds(), columns=r.getBoundarySpeciesIds())
+            array = pd.DataFrame(array, index=r.getReactionIds(), \
+                                 columns=r.getBoundarySpeciesIds())
 
         return array
 
@@ -145,39 +148,45 @@ class BMCA():
 
         """
         r = te.loada(self.model_file)
+        r.conservedMoietyAnalysis = True
         a = r.getIndependentFloatingSpeciesIds()
         b = r.getFloatingSpeciesIds()
         squiggle_idx = [b.index(i) for i in a if i in b]
         squiggle_idx.sort()
-
+        
         t1 = np.linalg.inv(np.diag(self.x_star))
         t2 = np.linalg.inv(np.diag(np.ones(len(self.x_star))))
         t3 = self.N
         t4 = np.linalg.pinv(self.N[squiggle_idx,:])
         t5 = np.diag(np.ones(len(squiggle_idx)))
         t6 = np.diag(self.x_star[squiggle_idx])
-
         L = t1 @ t2 @ t3 @ t4 @ t5 @ t6 # link matrix
+        
+        L_ = r.getLinkMatrix()
 
         # solving for equation 10, steady state internal metabolite concentrations
         t7 = self.N[squiggle_idx,:]
+        t7_ = r.getReducedStoichiometryMatrix()
         t8 = np.diag(self.v_star)
+        
+        d = t7_ @ t8 @ Ea @ L
 
-        t100 = -np.linalg.inv(t7 @ t8 @ Ea @ L) 
-        t101 = t7 @ t8 @ Eb @ np.log10(self.yn).T
+        print(np.linalg.matrix_rank(d)) 
+
+        t100 = -np.linalg.pinv(t7_ @ t8 @ Ea @ L) 
+        t101 = t7_ @ t8 @ Eb @ np.log(self.yn).T # here, we may need to add in another dimension
         chi_star = t100 @ t101
 
         chi_star.rename({1:'met_conc'}, axis=1, inplace=True)
         res = {squiggle_idx[i]: b[i] for i in range(len(squiggle_idx))}
-        chi_star = chi_star.rename(index=res)# .sort_index()
+        chi_star = chi_star.rename(index=res)
 
         return chi_star
     
-    
     def calculate_PSJ_ss(self, Ea, Eb):
         # equation 5 of PSJ's paper
-        v_e = np.diag(np.matmul(self.en, self.v_star.reshape((-1,1))))
-        N_v_e = self.N * v_e
+        v_e = np.diag(np.squeeze(self.en * self.v_star).to_numpy())
+        N_v_e = self.N * v_e # would use @ instead of * for only 1 perturbation
         A = np.matmul(N_v_e, Ea)
         
         inner_v = (np.ones((self.N.shape[1], self.n_exp)) + np.matmul(Eb, np.log(self.yn).T))
@@ -186,8 +195,4 @@ class BMCA():
         A_pinv = sp.linalg.pinv(A)
         chi = np.matmul(A_pinv, B)
         
-        v_hat = np.diag(np.matmul((np.ones((self.N.shape[1], self.n_exp)) +
-                np.matmul(Ea, chi) +
-                np.matmul(Eb, self.yn.T)), self.en))
-        
-        return chi, v_hat
+        return chi
