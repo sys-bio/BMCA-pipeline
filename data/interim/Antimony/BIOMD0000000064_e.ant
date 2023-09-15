@@ -25,8 +25,8 @@ model *Teusink2000_Glycolysis()
   species GLCi in cytosol, G6P in cytosol, F6P in cytosol, F16P in cytosol;
   species TRIO in cytosol, BPG in cytosol, P3G in cytosol, P2G in cytosol;
   species PEP in cytosol, PYR in cytosol, ACE in cytosol, P in cytosol, NAD in cytosol;
-  species NADH in cytosol, $Glyc in cytosol, $Trh in cytosol, $CO2 in cytosol;
-  species $SUCC in cytosol, $GLCo in extracellular, $ETOH in cytosol, $GLY in cytosol;
+  species NADH in cytosol, $CO2 in cytosol; # $Glyc in cytosol, $Trh in cytosol,
+  species $GLCo in extracellular, $ETOH in cytosol, $GLY in cytosol; # $SUCC in cytosol, 
   # species $ATP in cytosol, $ADP in cytosol, $SUM_P in cytosol, $AMP in cytosol;
   species $F26BP in cytosol;
 
@@ -38,8 +38,10 @@ model *Teusink2000_Glycolysis()
   // Reactions:
   vGLK: GLCi + P -> G6P; e_vGLK * (cytosol*vGLK_VmGLK/(vGLK_KmGLKGLCi*vGLK_KmGLKATP))*(GLCi*ATP - G6P*ADP/vGLK_KeqGLK)/((1 + GLCi/vGLK_KmGLKGLCi + G6P/vGLK_KmGLKG6P)*(1 + ATP/vGLK_KmGLKATP + ADP/vGLK_KmGLKADP));
   vPGI: G6P -> F6P; e_vPGI * (cytosol*vPGI_VmPGI_2/vPGI_KmPGIG6P_2)*(G6P - F6P/vPGI_KeqPGI_2)/(1 + G6P/vPGI_KmPGIG6P_2 + F6P/vPGI_KmPGIF6P_2);
-  vGLYCO: G6P + P => $Glyc; e_vGLYCO * cytosol*vGLYCO_KGLYCOGEN_3;
-  vTreha: 2 G6P + P => $Trh; e_vTreha * cytosol*vTreha_KTREHALOSE;
+  # vGLYCO: G6P + P => $Glyc; e_vGLYCO * cytosol*vGLYCO_KGLYCOGEN_3;
+  vGLYCO: G6P + P => ; e_vGLYCO * cytosol*vGLYCO_KGLYCOGEN_3;
+  # vTreha: 2 G6P + P => $Trh; e_vTreha * cytosol*vTreha_KTREHALOSE;
+  vTreha: 2 G6P + P => ; e_vTreha * cytosol*vTreha_KTREHALOSE;
   vPFK: F6P + P => F16P; e_vPFK * cytosol*vPFK_VmPFK*gR*(F6P/KmPFKF6P)*(ATP/KmPFKATP)*R_PFK(KmPFKF6P, KmPFKATP, gR, ATP, F6P)/(R_PFK(KmPFKF6P, KmPFKATP, gR, ATP, F6P)^2 + L_PFK(Lzero, CiPFKATP, KiPFKATP, CPFKAMP, KPFKAMP, CPFKF26BP, KPFKF26BP, CPFKF16BP, KPFKF16BP, ATP, AMP, F16P, F26BP)*T_PFK(CPFKATP, KmPFKATP, ATP)^2);
   vALD: F16P -> 2 TRIO; e_vALD * (cytosol*vALD_VmALD/vALD_KmALDF16P)*(F16P - (KeqTPI/(1 + KeqTPI))*TRIO*(1/(1 + KeqTPI))*TRIO/vALD_KeqALD)/(1 + F16P/vALD_KmALDF16P + (KeqTPI/(1 + KeqTPI))*TRIO/vALD_KmALDGAP + (1/(1 + KeqTPI))*TRIO/vALD_KmALDDHAP + (KeqTPI/(1 + KeqTPI))*TRIO*(1/(1 + KeqTPI))*TRIO/(vALD_KmALDGAP*vALD_KmALDDHAP) + F16P*(KeqTPI/(1 + KeqTPI))*TRIO/(vALD_KmALDGAPi*vALD_KmALDF16P));
   vGAPDH: TRIO + NAD -> BPG + NADH; e_vGAPDH * cytosol*(vGAPDH_VmGAPDHf*(KeqTPI/(1 + KeqTPI))*TRIO*NAD/(vGAPDH_KmGAPDHGAP*vGAPDH_KmGAPDHNAD) - vGAPDH_VmGAPDHr*BPG*NADH/(vGAPDH_KmGAPDHBPG*vGAPDH_KmGAPDHNADH))/((1 + (KeqTPI/(1 + KeqTPI))*TRIO/vGAPDH_KmGAPDHGAP + BPG/vGAPDH_KmGAPDHBPG)*(1 + NAD/vGAPDH_KmGAPDHNAD + NADH/vGAPDH_KmGAPDHNADH));
@@ -48,7 +50,8 @@ model *Teusink2000_Glycolysis()
   vENO: P2G -> PEP; e_vENO * (cytosol*vENO_VmENO/vENO_KmENOP2G)*(P2G - PEP/vENO_KeqENO)/(1 + P2G/vENO_KmENOP2G + PEP/vENO_KmENOPEP);
   vPYK: PEP -> PYR + P; e_vPYK *(cytosol*vPYK_VmPYK/(vPYK_KmPYKPEP*vPYK_KmPYKADP))*(PEP*ADP - PYR*ATP/vPYK_KeqPYK)/((1 + PEP/vPYK_KmPYKPEP + PYR/vPYK_KmPYKPYR)*(1 + ATP/vPYK_KmPYKATP + ADP/vPYK_KmPYKADP));
   vPDC: PYR => ACE + $CO2; e_vPDC * cytosol*vPDC_VmPDC*(PYR^vPDC_nPDC/vPDC_KmPDCPYR^vPDC_nPDC)/(1 + PYR^vPDC_nPDC/vPDC_KmPDCPYR^vPDC_nPDC);
-  vSUC: 2 ACE + 3 NAD + 4 P => 3 NADH + $SUCC; e_vSUC * cytosol*vSUC_KSUCC*ACE;
+  # vSUC: 2 ACE + 3 NAD + 4 P => 3 NADH + $SUCC; e_vSUC * cytosol*vSUC_KSUCC*ACE;
+  vSUC: 2 ACE + 3 NAD + 4 P => 3 NADH; e_vSUC * cytosol*vSUC_KSUCC*ACE;
   vGLT: $GLCo -> GLCi; e_vGLT * (vGLT_VmGLT/vGLT_KmGLTGLCo)*(GLCo - GLCi/vGLT_KeqGLT)/(1 + GLCo/vGLT_KmGLTGLCo + GLCi/vGLT_KmGLTGLCi + 0.91*GLCo*GLCi/(vGLT_KmGLTGLCo*vGLT_KmGLTGLCi));
   vADH: ACE + NADH -> NAD + $ETOH; e_vADH * -cytosol*((vADH_VmADH/(vADH_KiADHNAD*vADH_KmADHETOH))*(NAD*ETOH - NADH*ACE/vADH_KeqADH)/(1 + NAD/vADH_KiADHNAD + vADH_KmADHNAD*ETOH/(vADH_KiADHNAD*vADH_KmADHETOH) + vADH_KmADHNADH*ACE/(vADH_KiADHNADH*vADH_KmADHACE) + NADH/vADH_KiADHNADH + NAD*ETOH/(vADH_KiADHNAD*vADH_KmADHETOH) + vADH_KmADHNADH*NAD*ACE/(vADH_KiADHNAD*vADH_KiADHNADH*vADH_KmADHACE) + vADH_KmADHNAD*ETOH*NADH/(vADH_KiADHNAD*vADH_KmADHETOH*vADH_KiADHNADH) + NADH*ACE/(vADH_KiADHNADH*vADH_KmADHACE) + NAD*ETOH*ACE/(vADH_KiADHNAD*vADH_KmADHETOH*vADH_KiADHACE) + ETOH*NADH*ACE/(vADH_KiADHETOH*vADH_KiADHNADH*vADH_KmADHACE)));
   vG3PDH: TRIO + NADH => NAD + $GLY; e_vG3PDH * (cytosol*vG3PDH_VmG3PDH/(vG3PDH_KmG3PDHDHAP*vG3PDH_KmG3PDHNADH))*((1/(1 + KeqTPI))*TRIO*NADH - GLY*NAD/vG3PDH_KeqG3PDH)/((1 + (1/(1 + KeqTPI))*TRIO/vG3PDH_KmG3PDHDHAP + GLY/vG3PDH_KmG3PDHGLY)*(1 + NADH/vG3PDH_KmG3PDHNADH + NAD/vG3PDH_KmG3PDHNAD));
@@ -69,10 +72,10 @@ model *Teusink2000_Glycolysis()
   P = 6.31;
   NAD = 1.2;
   NADH = 0.39;
-  Glyc = 0;
-  Trh = 0;
+  # Glyc = 0;
+  # Trh = 0;
   CO2 = 1;
-  SUCC = 0;
+  # SUCC = 0;
   GLCo = 50;
   ETOH = 50;
   GLY = 0.15;
@@ -299,9 +302,9 @@ model *Teusink2000_Glycolysis()
   PYR is "Pyruvate";
   ACE is "Acetaldehyde";
   P is "High energy phosphates";
-  Glyc is "Glycogen";
-  Trh is "Trehalose";
-  SUCC is "Succinate";
+  # Glyc is "Glycogen";
+  # Trh is "Trehalose";
+  # SUCC is "Succinate";
   GLCo is "Extracellular Glucose";
   ETOH is "Ethanol";
   GLY is "Glycerol";
@@ -369,13 +372,13 @@ model *Teusink2000_Glycolysis()
                "http://identifiers.org/kegg.compound/C00003"
   NADH identity "http://identifiers.org/obo.chebi/CHEBI:16908",
                 "http://identifiers.org/kegg.compound/C00004"
-  Glyc identity "http://identifiers.org/obo.chebi/CHEBI:28087",
-                "http://identifiers.org/kegg.compound/C00182"
-  Trh identity "http://identifiers.org/obo.chebi/CHEBI:27082",
-               "http://identifiers.org/kegg.compound/C01083"
+  #Glyc identity "http://identifiers.org/obo.chebi/CHEBI:28087",
+  #              "http://identifiers.org/kegg.compound/C00182"
+  #Trh identity "http://identifiers.org/obo.chebi/CHEBI:27082",
+  #             "http://identifiers.org/kegg.compound/C01083"
   CO2 identity "http://identifiers.org/obo.chebi/CHEBI:16526",
                "http://identifiers.org/kegg.compound/C00011"
-  SUCC identity "http://identifiers.org/obo.chebi/CHEBI:30031"
+  # SUCC identity "http://identifiers.org/obo.chebi/CHEBI:30031"
   GLCo identity "http://identifiers.org/obo.chebi/CHEBI:17234",
                 "http://identifiers.org/kegg.compound/C00293"
   ETOH identity "http://identifiers.org/obo.chebi/CHEBI:16236",
