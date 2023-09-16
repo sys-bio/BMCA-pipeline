@@ -31,11 +31,11 @@ import matplotlib.pyplot as plt
 
 class BMCA():
 
-    def __init__(self, model_file, data_file, desired_product=None, bd_exclude=[]):
+    def __init__(self, model_file, data_file, ref_ind=0, bd_exclude=[]):
                 
         self.model_file = model_file
         self.N, self.v_star, self.en, self.xn, self.yn, self.vn, self.x_star = \
-            BMCA.load_model_data(model_file, data_file, desired_product, bd_exclude)
+            BMCA.load_model_data(model_file, data_file, ref_ind, bd_exclude)
         """
         s = te.loada("models/MODEL1303260011_cobra.ant")
         with open("temp.txt", "w") as f:
@@ -49,7 +49,7 @@ class BMCA():
         self.Ey = BMCA.create_Visser_elasticity_matrix(model_file, Ex=False)
 
 
-    def load_model_data(model_file, data_file, desired_product, bd_exclude):
+    def load_model_data(model_file, data_file, ref_ind, bd_exclude):
         # a function, because a method takes in 'self'
         """
         this method takes in an SBML model and csv data to establish important
@@ -68,7 +68,8 @@ class BMCA():
         v = data[['v_' + i for i in r.getReactionIds()]]
 
         # normalizing the data
-        ref_ind = data.idxmax()[desired_product]   
+        #  'ref' should be the first row of data
+        # ref_ind = data.idxmax()[desired_product]   
         e_star = e.iloc[ref_ind].values
         x_star = x.iloc[ref_ind].values
         y_star = y.iloc[ref_ind].values
@@ -169,11 +170,10 @@ class BMCA():
         t7_ = r.getReducedStoichiometryMatrix()
         t8 = np.diag(self.v_star)
         
-        d = t7_ @ t8 @ Ea @ L
+        # d = t7_ @ t8 @ Ea @ L
+        # print(np.linalg.matrix_rank(d)) 
 
-        print(np.linalg.matrix_rank(d)) 
-
-        t100 = -np.linalg.pinv(t7_ @ t8 @ Ea @ L) 
+        t100 = -np.linalg.inv(t7_ @ t8 @ Ea @ L_) 
         t101 = t7_ @ t8 @ Eb @ np.log(self.yn).T # here, we may need to add in another dimension
         chi_star = t100 @ t101
 
@@ -186,9 +186,10 @@ class BMCA():
     def calculate_PSJ_ss(self, Ea, Eb):
         # equation 5 of PSJ's paper
         v_e = np.diag(np.squeeze(self.en * self.v_star).to_numpy())
-        N_v_e = self.N * v_e # would use @ instead of * for only 1 perturbation
+        N_v_e = self.N @ v_e # would use @ instead of * for only 1 perturbation
         A = np.matmul(N_v_e, Ea)
         
+        print(self.yn)
         inner_v = (np.ones((self.N.shape[1], self.n_exp)) + np.matmul(Eb, np.log(self.yn).T))
         B = -np.matmul(N_v_e, inner_v)
 

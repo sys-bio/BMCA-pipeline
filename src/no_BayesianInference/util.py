@@ -19,6 +19,7 @@ def generate_data(model_file, perturbation_levels, data_folder):
     for pl in perturbation_levels:
         
         r = te.loada(model_file)
+        r.conservedMoietyAnalysis = True
         
         exMet = r.getBoundarySpeciesIds()
         inMet = r.getFloatingSpeciesIds()
@@ -33,7 +34,7 @@ def generate_data(model_file, perturbation_levels, data_folder):
         with open(data_folder + f'{model_name}_{pl}.csv', 'w', encoding='UTF8', newline='') as f:
             writer = csv.writer(f)
             writer.writerow(header)
-            
+   
             try: # base case
                 
                 spConc = list(r.simulate(0,1000000)[-1])[1:]
@@ -45,7 +46,7 @@ def generate_data(model_file, perturbation_levels, data_folder):
                 fluxes = list(r.getReactionRates())
 
                 writer.writerow(enzymes + exMet_values + spConc + fluxes)
-                
+                """
                 # perturbed enzyme cases
                 for params in e_list:
                     for level in perturbation_level:
@@ -59,9 +60,9 @@ def generate_data(model_file, perturbation_levels, data_folder):
                         fluxes = list(r.getReactionRates())
                         
                         writer.writerow(enzymes + exMet_values + spConc + fluxes)
-                
+                """
                 # perturbed boundary species cases
-                for params in exMet:
+                for params in ['ETOH']:
                     for level in perturbation_level:
                         r.resetToOrigin()
                         r.setValue(params, level*r.getValue(params))
