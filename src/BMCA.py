@@ -100,8 +100,8 @@ class BMCA():
         
         yn[yn == 0] = 1E-6
 
-        # xn = np.log(xn)
-        # yn = np.log(yn)
+        xn = np.log(xn)
+        yn = np.log(yn)
 
         return N, v_star, en, xn, yn, vn, x_star
     
@@ -214,7 +214,7 @@ class BMCA():
         # print(np.linalg.matrix_rank(d)) 
 
         t100 = -np.linalg.inv(t7_ @ t8 @ Ea @ L_) 
-        t101 = t7_ @ t8 @ Eb @ np.log(self.yn).T # here, we may need to add in another dimension
+        t101 = t7_ @ t8 @ Eb @ (self.yn).T # here, we may need to add in another dimension
         chi_star = t100 @ t101
 
         chi_star.rename({1:'met_conc'}, axis=1, inplace=True)
@@ -230,7 +230,7 @@ class BMCA():
         A = np.matmul(N_v_e, Ea)
         
         print(self.yn)
-        inner_v = (np.ones((self.N.shape[1], self.n_exp)) + np.matmul(Eb, np.log(self.yn).T))
+        inner_v = (np.ones((self.N.shape[1], self.n_exp)) + np.matmul(Eb, (self.yn).T))
         B = -np.matmul(N_v_e, inner_v)
 
         A_pinv = sp.linalg.pinv(A)
