@@ -90,6 +90,37 @@ def ant_to_cobra(antimony_file):
     output_name = antimony_file.split('/')[-1]
     output_name = output_name.split('.')[0]
 
+    # load normal Antimony file
+    with open(antimony_file,'r') as file:
+        lines = file.readlines()
+    section_indices = []
+    c_index = -1
+    for i, line in enumerate(lines): 
+        if '//' in line:
+            section_indices.append(i)
+        if '// Compartment' in line and c_index == -1: 
+            c_index = i
+
+    next_section = section_indices.index(c_index) + 1
+    with open(antimony_file,'r') as file:
+        lines = file.readlines()[c_index: section_indices[next_section]]
+    
+    for line in lines:
+        line = line.strip()
+        if '$' not in line: 
+            with open(f'{output_name}_cobra.ant', 'a') as f:
+                f.write(line + '\n')
+
+        else: 
+            no_bd_sp = [i for i in line.split(',') if '$' not in i]
+            no_bd_sp = [i for i in no_bd_sp if i!='']
+
+            line = ','.join(no_bd_sp)
+            if line != '' and line[-1] != ';': 
+                line += ';'
+            with open(f'{output_name}_cobra.ant', 'a') as f:
+                f.write(line + '\n')
+    
     r = te.loada(antimony_file)
     doc = libsbml.readSBMLFromString(r.getSBML())
     model = doc.getModel()
@@ -132,3 +163,104 @@ def ant_to_cobra(antimony_file):
     for sp in r.getFloatingSpeciesIds():
         with open(f'{output_name}_cobra.ant', 'a') as f:
             f.write(sp + ' = 1;\n')
+
+import aesara.tensor as pt
+import pymc as pm
+
+def initialize_elasticity(ela_matrix, name=None, b=0.01, alpha=5, sd=1,
+                          m_compartments=None, r_compartments=None):
+    """ Initialize the elasticity matrix, adjusting priors to account for
+    reaction stoichiometry. Uses `SkewNormal(mu=0, sd=sd, alpha=sign*alpha)`
+    for reactions in which a metabolite participates, and a `Laplace(mu=0,
+    b=b)` for off-target regulation. 
+
+    Also accepts compartments for metabolites and reactions. If given,
+    metabolites are only given regulatory priors if they come from the same
+    compartment as the reaction.
+    
+    Parameters
+    ==========
+
+    ela_matrix : np.ndarray
+        A (nr x nm) elasticity matrix for the given reactions and metabolites
+    name : string
+        A name to be used for the returned pymc probabilities
+    b : float
+        Hyperprior to use for the Laplace distributions on regulatory interactions
+    alpha : float
+        Hyperprior to use for the SkewNormal distributions. As alpha ->
+        infinity, these priors begin to resemble half-normal distributions.
+    sd : float
+        Scale parameter for the SkewNormal distribution.
+    m_compartments : list
+        Compartments of metabolites. If None, use a densely connected
+        regulatory prior.
+    r_compartments : list
+        Compartments of reactions
+
+    Returns
+    =======
+
+    E : pymc matrix
+        constructed elasticity matrix
+
+    """
+    
+    if name is None:
+        name = 'ex'
+
+    if m_compartments is not None:
+        assert r_compartments is not None, \
+            "reaction and metabolite compartments must both be given"
+
+        regulation_array = np.array(
+            [[a in b for a in m_compartments]
+              for b in r_compartments]).flatten()
+        
+    else:
+        # If compartment information is not given, assume all metabolites and
+        # reactions are in the same compartment
+        regulation_array = np.array([True] * (ela_matrix.shape[1] * ela_matrix.shape[0]))
+
+
+    # Find where the guessed E matrix has zero entries
+    e_flat = ela_matrix.flatten()
+    nonzero_inds = np.where(e_flat != 0)[0]
+    offtarget_inds = np.where(e_flat == 0)[0]
+    e_sign = np.sign(e_flat[nonzero_inds])
+
+    # For the zero entries, determine whether regulation is feasible based on
+    # the compartment comparison
+    offtarget_reg = regulation_array[offtarget_inds]
+    reg_inds = offtarget_inds[offtarget_reg]
+    zero_inds = offtarget_inds[~offtarget_reg]
+
+    num_nonzero = len(nonzero_inds)
+    num_regulations = len(reg_inds)
+    num_zeros = len(zero_inds)
+    
+    # Get an index vector that 'unrolls' a stacked [kinetic, capacity, zero]
+    # vector into the correct order
+    flat_indexer = np.hstack([nonzero_inds, reg_inds, zero_inds]).argsort()
+        
+    if alpha is not None:
+        e_kin_entries = pm.SkewNormal(
+            name + '_kinetic_entries', sigma=sd, alpha=alpha, shape=num_nonzero,
+            initval= 0.1 + np.abs(np.random.randn(num_nonzero)))
+    else:
+        e_kin_entries = pm.HalfNormal(
+            name + '_kinetic_entries', sigma=sd, shape=num_nonzero,
+            initval= 0.1 + np.abs(np.random.randn(num_nonzero)))
+    
+    e_cap_entries = pm.Laplace(
+        name + '_capacity_entries', mu=0, b=b, shape=num_regulations,
+        initval=b * np.random.randn(num_regulations))
+    
+    flat_e_entries = pt.concatenate(
+        [e_kin_entries * e_sign,  # kinetic entries
+         e_cap_entries,           # capacity entries
+         pt.zeros(num_zeros)])     # different compartments
+        
+    E = flat_e_entries[flat_indexer].reshape(ela_matrix.shape)
+    
+    return E
