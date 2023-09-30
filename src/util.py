@@ -267,17 +267,17 @@ def initialize_elasticity(ela_matrix, name=None, b=0.01, alpha=5, sd=1,
 
 def elasticity_to_CCC(BMCA, scaledE=None):
 
-    if not scaledE:
+    if scaledE is None:
         scaledE = BMCA.Ex
 
     r = te.loada(BMCA.model_file)
     r.conservedMoietyAnalysis = True
     link_matrix = r.getLinkMatrix()
     Nr = r.getReducedStoichiometryMatrix()
-    
+
     ##### this line needs to be workshopped
-    unscaledE = np.linalg.inv(np.diag(1/BMCA.v_star())) @ scaledE @ np.linalg.inv(np.diag(BMCA.x_star()))
-    
+    unscaledE = np.linalg.inv(np.diag(1/BMCA.v_star)) @ scaledE @ np.linalg.inv(np.diag(BMCA.x_star))
+
     invJac = np.linalg.inv(-Nr@unscaledE@link_matrix)
     idMat = np.identity(len(BMCA.v_star))
 
@@ -288,5 +288,7 @@ def elasticity_to_CCC(BMCA, scaledE=None):
     # scaled concentration and flux control coefficients, respectively
 
     ##### these two lines need to be workshopped
-    CXS = np.diag(1/r.getFloatingSpeciesConcentrations()) @ Cx @ np.diag(r.getReactionRates())
-    CJS = np.diag(1/r.getReactionRates()) @ CJ @ np.diag(r.getReactionRates())
+    CxS = np.diag(1/BMCA.x_star) @ Cx @ np.diag(BMCA.v_star)
+    CJS = np.diag(1/BMCA.v_star) @ CJ @ np.diag(BMCA.v_star)
+
+    return CxS, CJS
