@@ -110,7 +110,7 @@ class BMCA():
         E[j,i] represents the elasticity of reaction j for metabolite i.
         stolen from emll.util.create_elasticity_matrix
         """        
-        if Ex:
+        if Ex: # making the Ex matrix
             # cobra_file = model_file.split('/')[-1]
             cobra_file = model_file.split('.')[0] + '_cobra.ant'
                 
@@ -142,16 +142,17 @@ class BMCA():
                         (stoich < 0)):
                         array[r_ind(reaction), m_ind(metabolite)] = -np.sign(stoich)
 
-                    # Irreversible in reverse direction, only assign in met is product
+                    # Irreversible in reverse direction, only assign if met is product
                     elif ((not reaction.reversibility) & 
                         (reaction.lower_bound < 0) &
                         (stoich > 0)):
                         array[r_ind(reaction), m_ind(metabolite)] = -np.sign(stoich)
 
             array =  emll.util.create_elasticity_matrix(model)
-            array = pd.DataFrame(array, index=r.getReactionIds(), columns=r.getFloatingSpeciesIds())
+            array = pd.DataFrame(array, index=r.getReactionIds(), columns=[i.id for i in model.metabolites])
+            array = array.loc[:,r.getFloatingSpeciesIds()]
             
-        else: 
+        else: # making the Ey matrix
             r = te.loada(model_file)
             r.conservedMoietyAnalysis = True
             
