@@ -14,6 +14,8 @@ def generate_data(model_file, perturbation_levels, data_folder):
     """
     Takes in SBML model_file and creates perturbation data files. 
     Deposits perturbation data files into data_folder
+
+    data_folder='data\interim\generated_data'
     """
     model_name = model_file.split('.')[0]
     model_name = model_name.split('/')[-1]
@@ -27,17 +29,17 @@ def generate_data(model_file, perturbation_levels, data_folder):
         fluxIDs = ['v_' + i for i in r.getReactionIds()]
         e_list = [i for i in r.getGlobalParameterIds() if 'e_' in i]   
         
-        pertLevel = pl/100 
+        pertLevel = pl #/100 
         perturbation_level = [1 - pertLevel, 1 + pertLevel]
         
         header = e_list + exMet + inMet + fluxIDs        
+        cont = True
         
         with open(data_folder + f'{model_name}_{pl}.csv', 'w', encoding='UTF8', newline='') as f:
             writer = csv.writer(f)
             writer.writerow(header)
-   
-            try: # base case
-                
+    
+            try: # base case    
                 spConc = list(r.simulate(0,1000000)[-1])[1:]
                 # r.conservedMoietyAnalysis = True
                 # r.steadyState()
@@ -47,36 +49,44 @@ def generate_data(model_file, perturbation_levels, data_folder):
                 fluxes = list(r.getReactionRates())
 
                 writer.writerow(enzymes + exMet_values + spConc + fluxes)
-                """
-                # perturbed enzyme cases
+            except:
+                print('failed at', params, level) # pass #    
+                cont=False
+            
+            # perturbed enzyme cases
+            if cont:
                 for params in e_list:
                     for level in perturbation_level:
-                        r.resetToOrigin()
-                        r.setValue(params, level*r.getValue(params))
-                        
-                        spConc = list(r.simulate(0,1000000)[-1])[1:]
-                        # r.steadyState()
-                        enzymes = [r.getValue(e) for e in e_list]
-                        exMet_values = [r.getValue(m) for m in exMet]
-                        fluxes = list(r.getReactionRates())
-                        
-                        writer.writerow(enzymes + exMet_values + spConc + fluxes)
-                """
-                # perturbed boundary species cases
-                for params in ['GLCo']:
-                    for level in perturbation_level:
-                        r.resetToOrigin()
-                        r.setValue(params, level*r.getValue(params))
-                        
-                        spConc = list(r.simulate(0,1000000)[-1])[1:]
-                        # r.steadyState()
-                        enzymes = [r.getValue(e) for e in e_list]
-                        exMet_values = [r.getValue(m) for m in exMet]
-                        fluxes = list(r.getReactionRates())
-                        
-                        writer.writerow(enzymes + exMet_values + spConc + fluxes)        
-            except:
-                print('failed at', params, level) # pass #
+                        try: 
+                            r.resetToOrigin()
+                            r.setValue(params, level*r.getValue(params))
+                            
+                            spConc = list(r.simulate(0,1000000)[-1])[1:]
+                            # r.steadyState()
+                            enzymes = [r.getValue(e) for e in e_list]
+                            exMet_values = [r.getValue(m) for m in exMet]
+                            fluxes = list(r.getReactionRates())
+                            
+                            writer.writerow(enzymes + exMet_values + spConc + fluxes)
+                        except:
+                            pass
+            
+            """
+            # perturbed boundary species cases
+            for params in ['GLCo']:
+                for level in perturbation_level:
+                    r.resetToOrigin()
+                    r.setValue(params, level*r.getValue(params))
+                    
+                    spConc = list(r.simulate(0,1000000)[-1])[1:]
+                    # r.steadyState()
+                    enzymes = [r.getValue(e) for e in e_list]
+                    exMet_values = [r.getValue(m) for m in exMet]
+                    fluxes = list(r.getReactionRates())
+                    
+                    writer.writerow(enzymes + exMet_values + spConc + fluxes) 
+            """       
+            
 
 
 
