@@ -56,12 +56,22 @@ class BMCA():
         """
         r = te.loada(model_file)
         r.conservedMoietyAnalysis = True
-        data = pd.read_csv(data_file)
+        
+        if isinstance(data_file, str):
+            df = pd.read_csv(data_file)
+        elif isinstance(data_file, pd.DataFrame):
+            df = data_file
+
+        # in case of omitted data
+        available_fl_sp = [i for i in r.getFloatingSpeciesIds() if i in df.columns]
+        
+        # clean the data
+        data = df.drop(df[df.lt(0).any(axis=1)].index)
 
         # sorting the data
         enzymes = ['e_' + i for i in r.getReactionIds()]
         e = data[enzymes]
-        x = data[r.getFloatingSpeciesIds()]
+        x = data[available_fl_sp]
         y = data[r.getBoundarySpeciesIds()]
         # y = data[[i for i in r.getBoundarySpeciesIds() if i not in bd_exclude]]
         v = data[['v_' + i for i in r.getReactionIds()]]
