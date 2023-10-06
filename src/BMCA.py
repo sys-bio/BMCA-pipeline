@@ -64,7 +64,8 @@ class BMCA():
 
         # in case of omitted data
         available_fl_sp = [i for i in r.getFloatingSpeciesIds() if i in df.columns]
-        
+        available_bd_sp = [i for i in r.getBoundarySpeciesIds() if i in df.columns]
+
         # clean the data
         data = df.drop(df[df.lt(0).any(axis=1)].index)
 
@@ -72,7 +73,7 @@ class BMCA():
         enzymes = ['e_' + i for i in r.getReactionIds()]
         e = data[enzymes]
         x = data[available_fl_sp]
-        y = data[r.getBoundarySpeciesIds()]
+        y = data[available_bd_sp]
         # y = data[[i for i in r.getBoundarySpeciesIds() if i not in bd_exclude]]
         v = data[['v_' + i for i in r.getReactionIds()]]
 

@@ -31,7 +31,11 @@ def generate_data(model_file, perturbation_levels, data_folder):
         
         pertLevel = pl #/100 
         perturbation_level = [1 - pertLevel, 1 + pertLevel]
+        # get ride of 0 values
+        # here
         
+
+
         header = e_list + exMet + inMet + fluxIDs        
         cont = True
         
