@@ -299,8 +299,7 @@ def elasticity_to_CCC(BMCA, scaledE=None):
     Cx = link_matrix@invJac@Nr 
     CJ = np.matmul(unscaledE, Cx) + idMat # unscaled FCC
 
-    # scaled concentration and flux control coefficients, respectively
-
+    # scaled concentration and flux control coefficients, respectively  
     ##### these two lines need to be workshopped
     CxS = np.diag(1/BMCA.x_star) @ Cx @ np.diag(BMCA.v_star)
     CJS = np.diag(1/BMCA.v_star) @ CJ @ np.diag(BMCA.v_star)
