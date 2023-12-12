@@ -3,12 +3,16 @@
 import numpy as np
 import scipy as sp
 import tellurium as te
-import os
+import aesara
+import aesara.tensor as at
 import re
 import csv
 import numpy as np
 import libsbml
-
+import os
+os.chdir('..')
+from emll.aesara_utils import LeastSquaresSolve
+os.chdir('src')
 
 def generate_data(model_file, perturbation_levels, data_folder):
     """
@@ -17,8 +21,9 @@ def generate_data(model_file, perturbation_levels, data_folder):
 
     data_folder='data\interim\generated_data'
     """
-    model_name = model_file.split('.')[0]
+    model_name = model_file.split('.ant')[0]
     model_name = model_name.split('/')[-1]
+    
     for pl in perturbation_levels:
         
         r = te.loada(model_file)
@@ -33,8 +38,6 @@ def generate_data(model_file, perturbation_levels, data_folder):
         perturbation_level = [1 - pertLevel, 1 + pertLevel]
         # get ride of 0 values
         # here
-        
-
 
         header = e_list + exMet + inMet + fluxIDs        
         cont = True
@@ -75,9 +78,9 @@ def generate_data(model_file, perturbation_levels, data_folder):
                         except:
                             pass
             
-            """
+            
             # perturbed boundary species cases
-            for params in ['GLCo']:
+            for params in r.getBoundarySpeciesIds():
                 for level in perturbation_level:
                     r.resetToOrigin()
                     r.setValue(params, level*r.getValue(params))
@@ -89,16 +92,13 @@ def generate_data(model_file, perturbation_levels, data_folder):
                     fluxes = list(r.getReactionRates())
                     
                     writer.writerow(enzymes + exMet_values + spConc + fluxes) 
-            """       
-            
-
 
 
 def ant_to_cobra(antimony_file):
     """
     This method takes in an Antimony file and converts it to a Cobra-
     friendly format by removing all boundary species and replacing all
-    rate laws with a constant. The returned file is in SBML
+    rate laws with a constant. Both an Antimony file and an SBML are produced.
     
     """
     output_name = antimony_file.split('/')[-1]
@@ -305,3 +305,32 @@ def elasticity_to_CCC(BMCA, scaledE=None):
     CJS = np.diag(1/BMCA.v_star) @ CJ @ np.diag(BMCA.v_star)
 
     return CxS, CJS
+
+def estimate_CCs(BMCA_obj, Ex):
+    BMCA_obj.vn[BMCA_obj.vn == 0] = 1e-6
+    
+    a = np.diag(BMCA_obj.en.values / BMCA_obj.vn.values)
+    a = np.diag(a)
+    a = a[np.newaxis,:].repeat(1000, axis=0)
+
+    Ex_ss = a @ Ex
+    As = BMCA_obj.N @ np.diag(BMCA_obj.v_star) @ Ex_ss
+    bs = BMCA_obj.N @ np.diag(BMCA_obj.v_star)
+    bs = bs[np.newaxis, :].repeat(1000, axis=0)
+    
+    As = at.as_tensor_variable(As)
+    bs = at.as_tensor_variable(bs)
+
+    def solve_aesara(A, b):
+        rsolve_op = LeastSquaresSolve()
+        return rsolve_op(A, b).squeeze()
+
+    CCC, _ = aesara.scan(lambda A, b: solve_aesara(A, b),
+                        sequences=[As, bs], strict=True)
+
+    identity = np.eye(len(BMCA_obj.N.T))
+    identity = identity[np.newaxis,:].repeat(1000, axis=0)
+    
+    FCC = (Ex_ss @ CCC.eval()) + identity
+    
+    return CCC.eval(), FCC
