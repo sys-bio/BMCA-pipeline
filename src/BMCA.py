@@ -114,7 +114,7 @@ class BMCA():
             filler_v_star.insert(i, 1)
         filler_v_star = np.array(filler_v_star)"""
 
-        if filler_v_star:
+        if filler_v_star is not None:
             v_star = filler_v_star
         # Correct negative flux values at the reference state
         N[:, v_star < 0] = -1 * N[:, v_star < 0]
