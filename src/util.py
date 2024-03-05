@@ -10,9 +10,6 @@ import csv
 import numpy as np
 import libsbml
 import os
-os.chdir('..')
-from emll.aesara_utils import LeastSquaresSolve
-os.chdir('src')
 
 def generate_data(model_file, perturbation_levels, data_folder):
     """
@@ -35,7 +32,7 @@ def generate_data(model_file, perturbation_levels, data_folder):
         e_list = [i for i in r.getGlobalParameterIds() if 'e_' in i]   
         
         pertLevel = pl #/100 
-        perturbation_level = [1 - pertLevel, 1 + pertLevel]
+        perturbation_level = [pertLevel]# [1 - pertLevel, 1 + pertLevel]
         # get ride of 0 values
         # here
 
@@ -322,6 +319,9 @@ def estimate_CCs(BMCA_obj, Ex):
     bs = at.as_tensor_variable(bs)
 
     def solve_aesara(A, b):
+        os.chdir('..')
+        from emll.aesara_utils import LeastSquaresSolve
+        os.chdir('src')
         rsolve_op = LeastSquaresSolve()
         return rsolve_op(A, b).squeeze()
 
