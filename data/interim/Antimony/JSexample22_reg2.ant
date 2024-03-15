@@ -22,8 +22,8 @@ v21: O -> $Q; e_v21*(Vm21 / Km34 *(O-Q/Keq21)) / (1 + O/Km34 + Q/Km35)
 
 
 // Variable initializations:
-kO_Ref = 0.5;
-kH_Ref = 0.5;
+kO_Ref = 0.05;
+kH_Ref = 0.05;
 
 e_v1 = 1;
 e_v2 = 1;
