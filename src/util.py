@@ -1,15 +1,22 @@
-# from PSJ's emll/util.py
+# from PSJ's emll/py
 
 import numpy as np
 import scipy as sp
 import tellurium as te
 import aesara
 import aesara.tensor as at
-import re
 import csv
 import numpy as np
 import libsbml
 import os
+
+import pandas as pd
+
+from emll.aesara_utils import LeastSquaresSolve
+
+# plotting
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 def generate_data(model_file, perturbation_levels, data_folder):
     """
@@ -334,3 +341,290 @@ def estimate_CCs(BMCA_obj, Ex):
     FCC = (Ex_ss @ CCC.eval()) + identity
     
     return CCC.eval(), FCC
+
+def calculate_e_hat(BMCA_obj, v_hat_obs, x_terms, y_terms): 
+    one_n = np.ones([len(x_terms.eval()),len(BMCA_obj.en)])
+    product = (v_hat_obs * (one_n + x_terms + y_terms)).eval()
+    product[product == 0 ] = 1E-6
+
+    return aesara.tensor.reciprocal(product)
+
+def plot_elbo(approx, output_dir, n_iter):
+    with sns.plotting_context('notebook', font_scale=1.2):
+
+        fig = plt.figure(figsize=(5,4))
+        plt.plot(approx.hist + 30, '.', rasterized=True, ms=1)
+        # plt.ylim([-1E1, 1E3])
+        plt.xlim([0, n_iter])
+        sns.despine(trim=True, offset=10)
+
+        plt.ylabel('-ELBO')
+        plt.xlabel('Iteration')
+        plt.title('in vitro ADVI convergence')
+        plt.tight_layout()
+
+        plt.savefig(output_dir + 'elbo_convergence.svg', transparent=True, dpi=200)
+
+def sample_draw(approx, n_samp):
+    if n_samp > 1:
+        samples = []
+        for i in range(n_samp): 
+            samples.append(approx.sample(draws=1000, random_seed=i))
+        return samples
+    else:
+        return approx.sample(draws=1000, random_seed=n_samp)
+
+def run_ADVI(BMCA_obj, output_dir, n_iter, n_samp=1):
+    with pm.Model() as pymc_model:
+        
+        # Initialize elasticities
+        Ex_t = pm.Deterministic('Ex', initialize_elasticity(BMCA_obj.Ex.to_numpy(), name='Ex'))
+        Ey_t = pm.Deterministic('Ey', initialize_elasticity(BMCA_obj.Ey.to_numpy(), name='Ey'))
+        e_obs = pm.Normal('e_obs', mu=1, sigma=1, observed=BMCA_obj.en.T)
+        chi_obs = pm.Normal('chi_obs', mu=0, sigma=10, observed=BMCA_obj.xn.T)
+        y_obs = pm.Normal('y_obs', mu=0, sigma=10, observed=BMCA_obj.yn.T)
+        likelihood = pm.Deterministic('vn', e_obs * (np.ones(BMCA_obj.en.T.shape) + pm.math.dot(Ex_t,chi_obs) + pm.math.dot(Ey_t,y_obs)))
+        v_hat_obs = pm.Normal('v_hat_obs', mu=likelihood, sigma=0.1, observed=BMCA_obj.vn.squeeze().T)
+    
+    with pymc_model:
+        advi = pm.ADVI()
+        tracker = pm.callbacks.Tracker(
+            mean = advi.approx.mean.eval,
+            std = advi.approx.std.eval
+        )
+        approx = advi.fit(
+            n=n_iter, 
+            callbacks = [tracker],
+            obj_optimizer=pm.adagrad_window(learning_rate=5E-3), 
+            total_grad_norm_constraint=0.7,
+            obj_n_mc=1)
+    
+    plot_elbo(approx, output_dir, n_iter)
+    return sample_draw(approx, n_samp)
+
+def runBayesInf_enzymes(BMCA_obj, r, data, output_dir, n_iter, n_samp=1):
+    enzymes = ['e_' + i for i in r.getReactionIds()]
+        
+    known_e_inds = []
+    omitted_e_inds = []
+    for i, e in enumerate(enzymes):
+        if e in data.columns:
+            known_e_inds.append(i)
+        else: 
+            omitted_e_inds.append(i)
+    e_inds = np.hstack([known_e_inds, omitted_e_inds]).argsort()
+
+    with pm.Model() as pymc_model:
+
+        # Initialize elasticities
+        Ex_t = pm.Deterministic('Ex', initialize_elasticity(BMCA_obj.Ex.to_numpy(), name='Ex'))
+        Ey_t = pm.Deterministic('Ey', initialize_elasticity(BMCA_obj.Ey.to_numpy(), name='Ey'))
+        
+        #Protein Expression Priors
+        e_measured = pm.Normal('e_measured', mu=1, sigma=0.1, observed=BMCA_obj.en.T)
+        e_unmeasured = pm.Normal('e_unmeasured', mu=1, sigma=0.1, shape=(len(omitted_e_inds), len(BMCA_obj.en)))
+        e_t = at.concatenate([e_measured, e_unmeasured], axis=0)[e_inds, :]
+        pm.Deterministic('e_t', e_t)
+        
+        chi_t = pm.Normal('chi_t', mu=0, sigma=0.5, observed=BMCA_obj.xn.T)
+        y_t = pm.Normal('y_t', mu=0, sigma=0.5, observed=BMCA_obj.yn.T)
+        
+        likelihood = pm.Deterministic('vn', e_t * (np.ones((len(e_inds), len(BMCA_obj.en))) + pm.math.dot(Ex_t,chi_t) + pm.math.dot(Ey_t,y_t)))
+        v_hat_obs = pm.Normal('v_hat_obs', mu=likelihood, sigma=0.1, observed=BMCA_obj.vn.squeeze().T)
+
+        advi = pm.ADVI()
+        tracker = pm.callbacks.Tracker(
+            mean = advi.approx.mean.eval,
+            std = advi.approx.std.eval
+        )
+    
+        approx = advi.fit(
+            n=n_iter, 
+            callbacks = [tracker],
+            obj_optimizer=pm.adagrad_window(learning_rate=1E-1), 
+            total_grad_norm_constraint=0.7,
+            obj_n_mc=1)
+
+    plot_elbo(approx, output_dir, n_iter)
+    return sample_draw(approx, n_samp)
+
+def runBayesInf_fluxes(BMCA_obj, r, data, output_dir, n_iter, n_samp=1):
+    flux = ['v_' + i for i in r.getReactionIds()]
+        
+    known_v_inds = []
+    omitted_v_inds = []
+    for i, v in enumerate(flux):
+        if v in data.columns:
+            known_v_inds.append(i)
+        else: 
+            omitted_v_inds.append(i)
+    v_inds = np.hstack([known_v_inds, omitted_v_inds]).argsort()
+
+    with pm.Model() as pymc_model:
+
+        # Initialize elasticities
+        Ex_t = pm.Deterministic('Ex', initialize_elasticity(BMCA_obj.Ex.to_numpy(), name='Ex'))
+        Ey_t = pm.Deterministic('Ey', initialize_elasticity(BMCA_obj.Ey.to_numpy(), name='Ey'))
+        
+        # flux priors
+        v_measured = pm.Normal('v_measured', mu=0, sigma=0.1, observed=BMCA_obj.vn.T)
+        v_unmeasured = pm.Normal('v_unmeasured', mu=0, sigma=1, shape=(len(omitted_v_inds), len(BMCA_obj.vn)))
+
+        v_t = at.concatenate([v_measured, v_unmeasured], axis=0)[v_inds, :]
+        pm.Deterministic('v_t', v_t)
+
+        chi_t = pm.Normal('chi_t', mu=0, sigma=0.5, observed=BMCA_obj.xn.T)
+        y_t = pm.Normal('y_t', mu=0, sigma=0.5, observed=BMCA_obj.yn.T)
+
+        #### NEED TO ADD fitting equation here
+        e_ss = calculate_e_hat(BMCA_obj, v_t, Ex_t@chi_t, Ey_t@y_t)
+        e_t = pm.Normal('e_t', mu=e_ss, sigma=1, observed=BMCA_obj.en.squeeze().T)
+
+        advi = pm.ADVI()
+        tracker = pm.callbacks.Tracker(
+            mean = advi.approx.mean.eval,
+            std = advi.approx.std.eval
+        )
+        approx = advi.fit(
+            n=n_iter, 
+            callbacks = [tracker],
+            obj_optimizer=pm.adagrad_window(learning_rate=5E-3), 
+            total_grad_norm_constraint=0.7,
+            obj_n_mc=1)
+        
+    plot_elbo(approx, output_dir, n_iter)
+    return sample_draw(approx, n_samp)
+
+def runBayesInf_internal(BMCA_obj, r, data, output_dir, n_iter, n_samp=1):
+    known_chi_inds = []
+    omitted_chi_inds = []
+    for i, sp in enumerate(r.getFloatingSpeciesIds()):
+        if sp in data.columns:
+            known_chi_inds.append(i)
+        else: 
+            omitted_chi_inds.append(i)
+    chi_inds = np.hstack([known_chi_inds, omitted_chi_inds]).argsort()
+    
+    with pm.Model() as pymc_model:
+    
+        # Initialize elasticities
+        Ex_t = pm.Deterministic('Ex', initialize_elasticity(BMCA_obj.Ex.to_numpy(), name='Ex'))
+        Ey_t = pm.Deterministic('Ey', initialize_elasticity(BMCA_obj.Ey.to_numpy(), name='Ey'))
+        
+        chi_measured = pm.Normal('chi_measured', mu=0, sigma=0.1, observed=BMCA_obj.xn.T)
+        chi_unmeasured = pm.Normal('chi_unmeasured', mu=0, sigma=10, shape=(len(omitted_chi_inds), len(BMCA_obj.xn)))
+
+        chi_t = at.concatenate([chi_measured, chi_unmeasured], axis=0)[chi_inds, :]
+        # supposedly chi_t would be in the order listed in ss tellurium
+
+        pm.Deterministic('chi_t', chi_t)
+
+        e_t = pm.Normal('e_t', mu=1, sigma=1, observed=BMCA_obj.en.T) # e_hat?
+        y_t = pm.Normal('y_t', mu=0, sigma=10, observed=BMCA_obj.yn.T) # yn?
+
+        likelihood = pm.Deterministic('vn', e_t * (np.ones(BMCA_obj.en.T.shape) + pm.math.dot(Ex_t,chi_t) + pm.math.dot(Ey_t,y_t)))
+        v_hat_obs = pm.Normal('v_hat_obs', mu=likelihood, sigma=0.1, observed=BMCA_obj.vn.squeeze().T)
+
+        advi = pm.ADVI()
+        tracker = pm.callbacks.Tracker(
+            mean = advi.approx.mean.eval,
+            std = advi.approx.std.eval
+        )
+        approx = advi.fit(
+            n=n_iter, 
+            callbacks = [tracker],
+            obj_optimizer=pm.adagrad_window(learning_rate=5E-3), 
+            total_grad_norm_constraint=0.7,
+            obj_n_mc=1)
+        
+    plot_elbo(approx, output_dir, n_iter)
+    return sample_draw(approx, n_samp)
+
+def runBayesInf_external(BMCA_obj, r, data, output_dir, n_iter, n_samp=1):
+    external = r.getBoundarySpeciesIds()
+    
+    known_y_inds = []
+    omitted_y_inds = []
+    for i, y in enumerate(external):
+        if y in data.columns:
+            known_y_inds.append(i)
+        else: 
+            omitted_y_inds.append(i)
+    y_inds = np.hstack([known_y_inds, omitted_y_inds]).argsort()
+
+    with pm.Model() as pymc_model:
+
+         # Initialize elasticities
+        Ex_t = pm.Deterministic('Ex', initialize_elasticity(BMCA_obj.Ex.to_numpy(), name='Ex'))
+        Ey_t = pm.Deterministic('Ey', initialize_elasticity(BMCA_obj.Ey.to_numpy(), name='Ey'))
+        
+        # flux priors
+        y_measured = pm.Normal('y_measured', mu=0, sigma=0.1, observed=BMCA_obj.vn.T)
+        y_unmeasured = pm.Normal('y_unmeasured', mu=0, sigma=0.1, shape=(len(omitted_y_inds), len(BMCA_obj.vn)))
+
+        y_t = at.concatenate([y_measured, y_unmeasured], axis=0)[y_inds, :]
+        pm.Deterministic('y_t', y_t)
+        
+        chi_t = pm.Normal('chi_t', mu=0, sigma=0.1, observed=BMCA_obj.xn.T)
+        e_t = pm.Normal('e_t', mu=1, sigma=0.1, observed=BMCA_obj.en.squeeze().T)
+
+        likelihood = pm.Deterministic('vn', e_t * (np.ones(BMCA_obj.en.T.shape) + pm.math.dot(Ex_t,chi_t) + pm.math.dot(Ey_t,y_t)))
+        v_hat_obs = pm.Normal('v_hat_obs', mu=likelihood, sigma=0.1, observed=BMCA_obj.vn.squeeze().T)
+
+        advi = pm.ADVI()
+        tracker = pm.callbacks.Tracker(
+            mean = advi.approx.mean.eval,
+            std = advi.approx.std.eval
+        )
+        approx = advi.fit(
+            n=n_iter, 
+            callbacks = [tracker],
+            obj_optimizer=pm.adagrad_window(learning_rate=1E-1), 
+            total_grad_norm_constraint=0.7,
+            obj_n_mc=1)
+        
+    plot_elbo(approx, output_dir, n_iter)
+    return sample_draw(approx, n_samp)
+
+
+def estimate_CCs(BMCA_obj, Ex, n_samp, a):
+
+    a = np.diag(a)
+    a = a[np.newaxis,:].repeat(n_samp * 1000, axis=0)
+    Ex_ss = a @ Ex
+    As = BMCA_obj.N @ np.diag(BMCA_obj.v_star) @ Ex_ss
+    bs = BMCA_obj.N @ np.diag(BMCA_obj.v_star)
+    bs = bs[np.newaxis, :].repeat(n_samp * 1000, axis=0)
+    
+    As = at.as_tensor_variable(As)
+    bs = at.as_tensor_variable(bs)
+
+    def solve_aesara(A, b):
+        rsolve_op = LeastSquaresSolve()
+        return rsolve_op(A, b).squeeze()
+
+    CCC, _ = aesara.scan(lambda A, b: solve_aesara(A, b),
+                        sequences=[As, bs], strict=True)
+
+    identity = np.eye(len(BMCA_obj.N.T))
+    identity = identity[np.newaxis,:].repeat(n_samp * 1000, axis=0)
+    
+    FCC = (Ex_ss @ CCC.eval()) + identity
+    
+    # return CCC.eval(), FCC
+    return FCC
+
+
+def append_FCC_df(postFCC, label, r):
+    dfs=[]
+    
+    for idx, rxn in enumerate(r.getReactionIds()):
+        # negativity applied here
+        df = -pd.DataFrame(postFCC[:,idx,:], columns=r.getReactionIds())
+        df['pt_rxn']=[rxn]*len(df)
+        dfs.append(df)
+    
+    w = pd.concat(dfs)
+    w['pt_str']=[label]*len(w)
+    return w
+

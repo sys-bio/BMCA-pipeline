@@ -1,21 +1,4 @@
-import sys
-
-from . import antemll 
-
-
-
-try: 
-    os.mkdir(output_dir)
-except FileExistsError:
-    pass
-
-ant = None
-#'../../../data/interim/Antimony/JSexample22_reg1.ant'  
-data_file = None
-# '../../../data/interim/generated_data/JSexample22-reg1/JSexample22_reg1_1.01.csv'
-output_dir = None # sys.argv[3] + "/output/"
-# '../../../data/interim/generated_data/JSexample22-reg1'
-crispri = None # 0 or 1 for yes or no
+from src import antemll 
 
 #################################################
 #################################################
@@ -39,109 +22,108 @@ import os
 from scipy import stats
 import scipy as sp
 
-os.chdir('../../..')
 from src import util
-import emll
-from emll.aesara_utils import LeastSquaresSolve
-os.chdir('notebooks/topologyB/all_data/')
 
-###
-"""
-For crispri, 
-    A: 0.1x
-    B: 0.2x
-    C: 0.3x
-    D: 0.4x
-    E: 0.5x
-    F: 1.01x
-
-For CRISPRa, 
-    A: 1.01x
-    B: 1.5x
-    C: 3x
-    D: 5x
-    E: 7x
-    F: 10x
-
-"""
-
-#########################################################
+##########################################################
 ##########################################################
 
-def runBMCA(ant, data_file, output_dir): 
+def runBMCA(ant, data_file, output_dir, n_iter, omit=None): 
+
+    output_dir = output_dir + '/output/'
+    try:
+        os.makedirs(output_dir)
+    except FileExistsError:
+        pass
 
     r = te.loada(ant)
     r.conservedMoietyAnalysis = True
     r.steadyState()
 
-        data_file_A = data_file + '_0.1.csv'
-        data_file_B = data_file + '_0.2.csv'
-        data_file_C = data_file + '_0.3.csv'
-        data_file_D = data_file + '_0.4.csv'
-        data_file_E = data_file + '_0.5.csv'
-        data_file_F = data_file + '_1.01.csv'
-        data_file_G = data_file + '_1.5.csv'
-        data_file_H = data_file + '_3.csv'
-        data_file_I = data_file + '_5.csv'
-        data_file_J = data_file + '_7.csv'
-        data_file_K = data_file + '_10.csv'
-        pt_labels = ['0.1x', '0.2x', '0.3x', '0.4x', '0.5x','1.01x', 
-                     '1.5x', '3x', '5x', '7x', '10x']
+    enzymes = ['e_' + i for i in r.getReactionIds()]
+    internal = r.getFloatingSpeciesIds()
+    external = r.getBoundarySpeciesIds()
+    fluxes = ['v_' + i for i in r.getReactionIds()]
 
-    BMCA_obj_A = antemll.BMCA(ant, data_file_A)
-    BMCA_obj_B = antemll.BMCA(ant, data_file_B)
-    BMCA_obj_C = antemll.BMCA(ant, data_file_C)
-    BMCA_obj_D = antemll.BMCA(ant, data_file_D)
-    BMCA_obj_E = antemll.BMCA(ant, data_file_E)
-    BMCA_obj_F = antemll.BMCA(ant, data_file_F)
-    BMCA_obj_G = antemll.BMCA(ant, data_file_G)
-    BMCA_obj_H = antemll.BMCA(ant, data_file_H)
-    BMCA_obj_I = antemll.BMCA(ant, data_file_I)
-    BMCA_obj_J = antemll.BMCA(ant, data_file_J)
-    BMCA_obj_K = antemll.BMCA(ant, data_file_K)
+    data_file_A = data_file + '_0.1.csv'
+    data_file_B = data_file + '_0.2.csv'
+    data_file_C = data_file + '_0.3.csv'
+    data_file_D = data_file + '_0.4.csv'
+    data_file_E = data_file + '_0.5.csv'
+    data_file_F = data_file + '_1.01.csv'
+    data_file_G = data_file + '_1.5.csv'
+    data_file_H = data_file + '_3.csv'
+    data_file_I = data_file + '_5.csv'
+    data_file_J = data_file + '_7.csv'
+    data_file_K = data_file + '_10.csv'
+    pt_labels = ['0.1x', '0.2x', '0.3x', '0.4x', '0.5x','1.01x', 
+                    '1.5x', '3x', '5x', '7x', '10x']
+
+    data_files = [data_file_A, data_file_B, data_file_C, data_file_D, 
+                  data_file_E, data_file_F, data_file_G, data_file_H, 
+                  data_file_I, data_file_J, data_file_K]
+    
+    data = []
+    if omit is None: 
+        data = data_files
+    if omit == 'fluxes':
+        for file in data_files:
+            data.append(pd.read_csv(file)[enzymes+internal+external])
+        v_star = pd.read_csv(file)[fluxes].iloc[0].values
+    elif omit == 'enzymes':
+        for file in data_files:
+            data.append(pd.read_csv(file)[fluxes+internal+external])
+    elif omit == 'internal':
+        for file in data_files:
+            data.append(pd.read_csv(file)[fluxes+enzymes+external])
+    elif omit == 'external':
+        for file in data_files:
+            data.append(pd.read_csv(file)[fluxes+enzymes+internal])
+        
+    BMCA_objs = []
+    for i in data_files:
+        BMCA_objs.append(antemll.antemll(ant, i))
 
     ### Run BMCA
+    traces = []
+    n_samp = 3
+    if omit is None:
+        for i in BMCA_objs:
+            traces.append(util.run_ADVI(i, output_dir, n_iter, n_samp=n_samp))
 
-    traceA = util.run_ADVI(BMCA_obj_A)
-    traceB = util.run_ADVI(BMCA_obj_B)
-    traceC = util.run_ADVI(BMCA_obj_C)
-    traceD = util.run_ADVI(BMCA_obj_D)
-    traceE = util.run_ADVI(BMCA_obj_E)
-    traceF = util.run_ADVI(BMCA_obj_F)
-    traceG = util.run_ADVI(BMCA_obj_G)
-    traceH = util.run_ADVI(BMCA_obj_H)
-    traceI = util.run_ADVI(BMCA_obj_I)
-    traceJ = util.run_ADVI(BMCA_obj_J)
-    traceK = util.run_ADVI(BMCA_obj_K)
+    elif omit == 'fluxes':
+        for i in BMCA_objs:
+            traces.append(util.runBayesInf_fluxes(i, r, data[0], output_dir, 
+                                                  n_iter, n_samp=n_samp))
+    elif omit == 'enzymes':
+        for i in BMCA_objs:
+            traces.append(util.runBayesInf_enzymes(i, r, data[0], output_dir, 
+                                                  n_iter, n_samp=n_samp))
+    elif omit == 'internal':
+        for i in BMCA_objs:
+            traces.append(util.runBayesInf_internal(i, r, data[0], output_dir, 
+                                                  n_iter, n_samp=n_samp))
+    elif omit == 'external':
+        for i in BMCA_objs:
+            traces.append(util.runBayesInf_external(i, r, data[0], output_dir, 
+                                                  n_iter, n_samp=n_samp))
 
-    ExTrace_A = (traceA['posterior']['Ex']).to_numpy().squeeze()
-    ExTrace_B = (traceB['posterior']['Ex']).to_numpy().squeeze()
-    ExTrace_C = (traceC['posterior']['Ex']).to_numpy().squeeze()
-    ExTrace_D = (traceD['posterior']['Ex']).to_numpy().squeeze()
-    ExTrace_E = (traceE['posterior']['Ex']).to_numpy().squeeze()
-    ExTrace_F = (traceF['posterior']['Ex']).to_numpy().squeeze()
-    ExTrace_G = (traceG['posterior']['Ex']).to_numpy().squeeze()
-    ExTrace_H = (traceH['posterior']['Ex']).to_numpy().squeeze()
-    ExTrace_I = (traceI['posterior']['Ex']).to_numpy().squeeze()
-    ExTrace_J = (traceJ['posterior']['Ex']).to_numpy().squeeze()
-    ExTrace_K = (traceK['posterior']['Ex']).to_numpy().squeeze()
+    ExTraces = []
+    if n_samp == 1:
+        for i in traces:
+            ExTraces.append((i['posterior']['Ex']).to_numpy().squeeze())
+    elif n_samp > 1: 
+        for i in traces:
+            Ex_samples = []
+            for ii in range(n_samp):
+                Ex_samples.append((i[ii]['posterior']['Ex']).to_numpy().squeeze())                
+            trace = np.concatenate(Ex_samples)
+            ExTraces.append(trace)
+    
+    medExs =[]
+    for i in ExTraces:
+        medExs.append(np.median(i, axis=0))
 
-    medEx_A = np.median(ExTrace_A, axis=0)
-    medEx_B = np.median(ExTrace_B, axis=0)
-    medEx_C = np.median(ExTrace_C, axis=0)
-    medEx_D = np.median(ExTrace_D, axis=0)
-    medEx_E = np.median(ExTrace_E, axis=0)
-    medEx_F = np.median(ExTrace_F, axis=0)
-    medEx_G = np.median(ExTrace_G, axis=0)
-    medEx_H = np.median(ExTrace_H, axis=0)
-    medEx_I = np.median(ExTrace_I, axis=0)
-    medEx_J = np.median(ExTrace_J, axis=0)
-    medEx_K = np.median(ExTrace_K, axis=0)
-
-    medExs = [medEx_A, medEx_B, medEx_C, medEx_D, medEx_E, medEx_F, 
-              medEx_G, medEx_H, medEx_I, medEx_J, medEx_K]
-
-    ### Compare elasticity results with ground truth values
+        ### Compare elasticity results with ground truth values
 
     gtE = pd.DataFrame(r.getScaledElasticityMatrix(), index=r.getReactionIds(), columns=r.getFloatingSpeciesIds())
     gtE['pt'] = ['gt']* len(gtE)
@@ -156,8 +138,9 @@ def runBMCA(ant, data_file, output_dir):
         medEx_pile.append(mdEx_by_pt)
 
     medEx_df = pd.concat(medEx_pile)
-    medEx_df.to_csv('kataraTEST.csv')
+    medEx_df.to_csv(output_dir + 'medianPredictedExs.csv')
 
+    
     ### CALCULATING FCCs
     gtFCC = pd.DataFrame(r.getScaledFluxControlCoefficientMatrix(), index=r.getReactionIds(), columns=r.getReactionIds())
 
@@ -167,29 +150,73 @@ def runBMCA(ant, data_file, output_dir):
     gtFCC.reset_index(inplace=True)
     gtFCC['pt']=['gt']*len(gtFCC)
     gtFCC.set_index(['pt', 'pt_rxn'], inplace=True)
-
-    postFCCs = []
-
-    for i, ExTrace in enumerate(ExTraces):
-        postFCCs.append(util.estimate_CCs(BMCA_obj[i], ExTrace))
-
     
-    postFCC1 = util.estimate_CCs(BMCA_obj_A, ExTrace_A)
-    postFCC15 = util.estimate_CCs(BMCA_obj_B, ExTrace_B)
-    postFCC3 = util.estimate_CCs(BMCA_obj_C, ExTrace_C)
-    postFCC5 = util.estimate_CCs(BMCA_obj_D, ExTrace_D)
-    postFCC7 = util.estimate_CCs(BMCA_obj_E, ExTrace_E)
-    postFCC10 = util.estimate_CCs(BMCA_obj_F, ExTrace_F)
+    postFCCs = []
+    
+    if omit == 'enzymes':
+        EtTraces = []
+        et_samples = []
+        for i in traces:
+            for ii in range(n_samp):
+                et_samples.append((i[ii]['posterior']['e_t']).to_numpy().squeeze())
+            trace = np.concatenate(et_samples)
+            EtTraces.append(trace)
+        medEts =[]
+        for i in EtTraces:
+            medEts.append(np.median(i, axis=0).transpose())
+        
+        for i, med_et in enumerate(medEts):
+            BMCA_objs[i].vn[BMCA_objs[i].vn == 0] = 1e-6
+            a = np.diag(med_et / BMCA_objs[i].vn.values)    
+            postFCCs.append(util.estimate_CCs(BMCA_objs[i], ExTraces[i], n_samp, a))
 
-    postFCCs = [postFCC1, postFCC15, postFCC3, postFCC5, postFCC7, postFCC10]
+    elif omit == 'fluxes':
+        vtTraces = []
+        vt_samples = []
+        for i in traces:
+            for ii in range(n_samp):
+                vt_samples.append((i[ii]['posterior']['v_t']).to_numpy().squeeze())
+            trace = np.concatenate(vt_samples)
+            vtTraces.append(trace)
+        medvts =[]
+        for i in vtTraces:
+            medvts.append(np.median(i, axis=0).transpose())
+        
+        for i, med_vt in enumerate(medvts):
+            BMCA_objs[i].vn[BMCA_objs[i].vn == 0] = 1e-6
+            a = np.diag(BMCA_objs[i].en.values / med_vt)# BMCA_obj.vn.values)
+            postFCCs.append(util.estimate_CCs(BMCA_objs[i], ExTraces[i], n_samp, a))
 
+    else:
+        print('else')
+        for i, BMCA_obj in enumerate(BMCA_objs):
+            BMCA_obj.vn[BMCA_obj.vn == 0] = 1e-6
+            a = np.diag(BMCA_obj.en.values / BMCA_obj.vn.values)
+            postFCCs.append(util.estimate_CCs(BMCA_obj, ExTraces[i], n_samp, a))
+    
     postFCCdfs = pd.concat([util.append_FCC_df(postFCCs[i], pt_labels[i], r) for i in range(len(postFCCs))])
     prdFCCs = pd.pivot_table(postFCCdfs, index=['pt_str','pt_rxn'], aggfunc='median', sort=False)
+    prdFCCs.to_csv(output_dir + 'predictedFCCs.csv')   
     prdFCCmeds = pd.concat([gtFCC, prdFCCs])
-
+    prdFCCmeds.to_csv(output_dir + 'predictedFCCmedians.csv')   
+  
     ## Evaluating FCC ranking
         
     gtFCC=pd.DataFrame(r.getScaledFluxControlCoefficientMatrix(), columns=r.getReactionIds(), index=r.getReactionIds()).abs()
+    
+    m1 = gtFCC.index.values[:, None] == gtFCC.columns.values
+    gtFCC = pd.DataFrame(np.select([m1], [float('Nan')], gtFCC), columns=gtFCC.columns, index=gtFCC.index)
+    gtFCC_rankings= gtFCC.rank(axis=1, ascending=False, na_option='keep')
+    m1 = gtFCC_rankings.isin([1.0])  
+    m2 = gtFCC_rankings.isin([2.0])  
+    m3 = gtFCC_rankings.isin([3.0])  
+    a = m1.mul(r.getReactionIds()).apply(lambda x: [i for i in x if i], axis=1)
+    b = m2.mul(r.getReactionIds()).apply(lambda x: [i for i in x if i], axis=1)
+    c = m3.mul(r.getReactionIds()).apply(lambda x: [i for i in x if i], axis=1)
+
+    trueRanks = pd.concat([a,b,c], axis=1)
+    trueRanks['topThree'] = trueRanks[0] + trueRanks[1] + trueRanks[2]
+    
     scores = []
     for pt_level in postFCCs:
         postFCC_med=pd.DataFrame(np.median(pt_level, axis=0), columns=r.getReactionIds(), index=r.getReactionIds()).abs()
@@ -215,5 +242,4 @@ def runBMCA(ant, data_file, output_dir):
 
     summary = (topThreeCheckdf.sum(axis=0)/(len(r.getReactionIds())*3)).round(3)
     summary.to_csv(output_dir + 'top3summary.csv')
-    ### SAVE this into output file
 

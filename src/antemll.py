@@ -9,8 +9,6 @@ np.random.seed(0)
 np.set_printoptions(threshold=sys.maxsize)
 
 import pandas as pd
-pd.set_option('display.max_columns', None)
-pd.set_option('display.max_rows', None)
 
 from csv import writer
 
@@ -23,18 +21,15 @@ import tellurium as te
 import libsbml # https://synonym.caltech.edu/software/libsbml/5.18.0/docs/https://synonym.caltech.edu/software/libsbml/5.18.0/docs/formatted/python-api/annotated.html
 import cobra
 
-# plotting
-import matplotlib.pyplot as plt
-
 import emll
 
-class BMCA():
+class antemll():
 
-    def __init__(self, model_file, data_file, ref_ind=0, bd_exclude=[]):
+    def __init__(self, model_file, data_file, ref_ind=0, filler_v_star=None):
                 
         self.model_file = model_file
         self.N, self.v_star, self.en, self.xn, self.yn, self.vn, self.x_star = \
-            BMCA.load_model_data(model_file, data_file, ref_ind, bd_exclude)
+            antemll.load_model_data(model_file, data_file, ref_ind, filler_v_star)
         """
         s = te.loada("models/MODEL1303260011_cobra.ant")
         with open("temp.txt", "w") as f:
@@ -44,11 +39,11 @@ class BMCA():
         
         self.n_exp = self.en.shape[0]
 
-        self.Ex = BMCA.create_Visser_elasticity_matrix(model_file)
-        self.Ey = BMCA.create_Visser_elasticity_matrix(model_file, Ex=False)
+        self.Ex = antemll.create_Visser_elasticity_matrix(model_file)
+        self.Ey = antemll.create_Visser_elasticity_matrix(model_file, Ex=False)
 
 
-    def load_model_data(model_file, data_file, ref_ind, bd_exclude):
+    def load_model_data(model_file, data_file, ref_ind, filler_v_star):
         # a function, because a method takes in 'self'
         """
         this method takes in an SBML model and csv data to establish important
@@ -71,7 +66,7 @@ class BMCA():
 
         fluxes = ['v_' + i for i in r.getReactionIds()]
         available_fluxes = [i for i in fluxes if i in df.columns]
-
+        
         # clean the data
         data = df.drop(df[df[available_fl_sp].lt(0).any(axis=1)].index)
 
@@ -108,17 +103,19 @@ class BMCA():
 
         N = r.getFullStoichiometryMatrix()
         
-        filler_v_star = list(v_star).copy()
+        """filler_v_star = list(v_star).copy()
         filler_indices = set(range(len(fluxes))) - set([fluxes.index(i) for i in available_fluxes])
         for i in filler_indices:
             filler_v_star.insert(i, 1)
-        filler_v_star = np.array(filler_v_star)
+        filler_v_star = np.array(filler_v_star)"""
 
+        if filler_v_star is not None:
+            v_star = filler_v_star
         # Correct negative flux values at the reference state
-        N[:, filler_v_star < 0] = -1 * N[:, filler_v_star < 0]
+        N[:, v_star < 0] = -1 * N[:, v_star < 0]
         v_star = np.abs(v_star)
 
-        assert np.isclose(np.all(np.matmul(N, filler_v_star)), 0), "data does not describe steady state"
+        assert np.all(np.isclose(np.matmul(N, v_star), 0)), "data does not describe steady state"
         
         yn[yn == 0] = 1E-6
 
@@ -134,8 +131,8 @@ class BMCA():
         """        
         if Ex: # making the Ex matrix
             # cobra_file = model_file.split('/')[-1]
-            cobra_file = model_file.split('.')[0] + '_cobra.ant'
-                
+            cobra_file = model_file.split('.ant')[0] + '_cobra.ant'
+            print(cobra_file)
                 # check if cobra version exists 
                 # if not, make it
                 
@@ -143,8 +140,11 @@ class BMCA():
 
             r = te.loada(cobra_file)
             r.conservedMoietyAnalysis = True
-            # model = cobra.io.read_sbml_model("data/interim/sbml/BIOMD64_cobra_sbml.xml")
-            model = cobra.io.read_sbml_model("data/interim/sbml/flatTeusink_cobra.xml")
+            # model = cobra.io.read_sbml_model("../../data/interim/sbml/BIOMD64_cobra_sbml.xml")
+            # model = cobra.io.read_sbml_model("data/interim/sbml/flatTeusink_cobra.xml")
+            # model = cobra.io.read_sbml_model("../../data/interim/sbml/Simplified_Teusink_yeast_cobra.xml")
+            model = cobra.io.read_sbml_model("data/interim/sbml/JSexample22_cobra.xml")
+
             n_metabolites = len(model.metabolites)
             n_reactions = len(model.reactions)
             array = np.zeros((n_reactions, n_metabolites), dtype=float)
@@ -261,6 +261,3 @@ class BMCA():
         chi = np.matmul(A_pinv, B)
         
         return chi
-
-    # def establish_BayesInf_model():
-        
