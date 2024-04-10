@@ -27,9 +27,12 @@ from src import util
 ##########################################################
 ##########################################################
 
-def runBMCA(ant, data_file, output_dir, n_iter, omit=None): 
+def runBMCA(ant, data_file, output_dir, n_iter=45000, n_samp=3, omit=None): 
 
-    output_dir = output_dir + '/output/'
+    if omit:
+        output_dir = output_dir + f'/output-omit{omit}/'
+    else: 
+        output_dir = output_dir + '/output-allData/'
     try:
         os.makedirs(output_dir)
     except FileExistsError:
@@ -85,7 +88,6 @@ def runBMCA(ant, data_file, output_dir, n_iter, omit=None):
 
     ### Run BMCA
     traces = []
-    n_samp = 3
     if omit is None:
         for i in BMCA_objs:
             traces.append(util.run_ADVI(i, output_dir, n_iter, n_samp=n_samp))

@@ -588,9 +588,12 @@ def runBayesInf_external(BMCA_obj, r, data, output_dir, n_iter, n_samp=1):
 
 
 def estimate_CCs(BMCA_obj, Ex, n_samp, a):
-
+    print(n_samp)
     a = np.diag(a)
     a = a[np.newaxis,:].repeat(n_samp * 1000, axis=0)
+
+    print(Ex.shape)
+    print(a.shape)
     Ex_ss = a @ Ex
     As = BMCA_obj.N @ np.diag(BMCA_obj.v_star) @ Ex_ss
     bs = BMCA_obj.N @ np.diag(BMCA_obj.v_star)
