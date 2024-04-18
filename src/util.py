@@ -3,6 +3,7 @@
 import numpy as np
 import scipy as sp
 import tellurium as te
+import cobra
 import aesara
 import aesara.tensor as at
 import csv
@@ -588,12 +589,9 @@ def runBayesInf_external(BMCA_obj, r, data, output_dir, n_iter, n_samp=1):
 
 
 def estimate_CCs(BMCA_obj, Ex, n_samp, a):
-    print(n_samp)
     a = np.diag(a)
     a = a[np.newaxis,:].repeat(n_samp * 1000, axis=0)
 
-    print(Ex.shape)
-    print(a.shape)
     Ex_ss = a @ Ex
     As = BMCA_obj.N @ np.diag(BMCA_obj.v_star) @ Ex_ss
     bs = BMCA_obj.N @ np.diag(BMCA_obj.v_star)
@@ -630,4 +628,71 @@ def append_FCC_df(postFCC, label, r):
     w = pd.concat(dfs)
     w['pt_str']=[label]*len(w)
     return w
+
+def make_FBA_test_data(sbml_path, data_path, output_path):
+    
+    # load the cobra version of the model
+    model = cobra.io.read_sbml_model(sbml_path)
+    rxnIds = [i.id for i in model.reactions]
+    # load in available data (no fluxes)
+    data = pd.read_csv(data_path)
+
+    fluxes = ['v_' + i for i in rxnIds]
+    noFluxData = data.loc[:, ~data.columns.isin(fluxes)]
+    
+    internals = [i.id for i in model.metabolites]
+    enzymes = [i for i in noFluxData.columns if 'e_' in i]
+    externals = [i for i in noFluxData.columns if i not in (internals + enzymes)]
+
+    model.reactions.vGLT.upper_bound = 50
+    model.reactions.vGLT.lower_bound = 50
+
+    #model.reactions.vADH.upper_bound = 1000
+    model.reactions.vADH.lower_bound = 0.15
+
+    model.reactions.vG3PDH.upper_bound = 0.15
+    model.reactions.vG3PDH.lower_bound = 0.15
+
+    model.reactions.vGLYCO.upper_bound = 0.15
+    model.reactions.vGLYCO.lower_bound = 0.15
+
+    model.objective = model.reactions.vADH
+
+    for i in model.reactions:
+        if i.lower_bound == -1000:
+            i.lower_bound = 0.15
+
+    fba_fluxes =[]
+    #  these are the fluxes when there are no perturbations
+    sol = model.optimize()
+    fba_fluxes.append(sol.fluxes)
+
+    for reaction in model.reactions: 
+        temp_l = reaction.lower_bound
+        temp_u = reaction.upper_bound
+
+        if reaction.lower_bound==reaction.upper_bound:
+            reaction.upper_bound = reaction.upper_bound * 3
+            reaction.lower_bound = reaction.lower_bound * 3
+        else:
+            reaction.lower_bound = reaction.lower_bound * 3
+        
+        solulu = model.optimize()
+        fba_fluxes.append(solulu.fluxes)
+        reaction.lower_bound = temp_l
+        reaction.upper_bound = temp_u
+
+    for i in range(len(externals)):
+        fba_fluxes.append(fba_fluxes[0])
+
+    flux_results = pd.concat(fba_fluxes, axis=1).T.reset_index()
+    flux_results.drop('index', axis=1, inplace=True)
+    flux_results.columns = ['v_' + i for i in flux_results.columns]
+
+    FBA_test_data = pd.concat([noFluxData, flux_results], axis=1)
+    FBA_test_data.to_csv(output_path, index=False)
+
+
+
+
 

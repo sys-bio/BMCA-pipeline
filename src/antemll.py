@@ -2,10 +2,9 @@
 import os
 import sys
 from tqdm import tqdm
-
+     
 # arrays/dataframes
 import numpy as np
-np.random.seed(0)
 np.set_printoptions(threshold=sys.maxsize)
 
 import pandas as pd
