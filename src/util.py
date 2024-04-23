@@ -10,6 +10,9 @@ import csv
 import numpy as np
 import libsbml
 import os
+import random
+import logging
+logging.getLogger("cobra").setLevel(logging.ERROR)
 
 import pandas as pd
 
@@ -629,68 +632,106 @@ def append_FCC_df(postFCC, label, r):
     w['pt_str']=[label]*len(w)
     return w
 
-def make_FBA_test_data(sbml_path, data_path, output_path):
+
+def assign_teams(data_path, noise_bound, n_noisy, fluxes):
+    all_data = pd.read_csv(data_path)
     
-    # load the cobra version of the model
-    model = cobra.io.read_sbml_model(sbml_path)
-    rxnIds = [i.id for i in model.reactions]
-    # load in available data (no fluxes)
-    data = pd.read_csv(data_path)
+    all_players = set(all_data[fluxes].columns)
+    team1 = set(random.sample(all_data[fluxes].columns.tolist(), n_noisy))
+    team2 = all_players - team1
 
-    fluxes = ['v_' + i for i in rxnIds]
-    noFluxData = data.loc[:, ~data.columns.isin(fluxes)]
+    # first, decide on how much noise you want to add
+    noise_bound = noise_bound/100
+    noise = 1 + np.random.uniform(-noise_bound, noise_bound, [n_noisy,1])
+
+    all_data.loc[:, all_data.columns.isin(list(team1))] *= noise.squeeze()
+
+    return team1, team2, all_data
+
+
+def calculate_noisy_fba(team1, team2, all_data, cobra_file):
+    fba_model = cobra.io.read_sbml_model(cobra_file)
+    sample_flux_responses = []
+    for sample in range(len(all_data)):
+        for t in team1: # for each column
+            rxn = t.split('_')[1]
+            # set the fba bounds according to the the noise generator
+            try: 
+                fba_model.reactions.get_by_id(rxn).upper_bound = all_data[t][sample]
+                fba_model.reactions.get_by_id(rxn).lower_bound = all_data[t][sample]
+            except: 
+                fba_model.reactions.get_by_id(rxn).lower_bound = all_data[t][sample]
+                fba_model.reactions.get_by_id(rxn).upper_bound = all_data[t][sample]
+
+        # find the max of team 1 fluxes and make that the upper and lower 
+        # bounds for team 2 reactions. 
+        dbl_bd = all_data.loc[:, all_data.columns.isin(list(team1))].max(axis=1)[sample] * 2
+        for t in team2: # for each column
+            rxn = t.split('_')[1]
+            try: 
+                fba_model.reactions.get_by_id(rxn).upper_bound = dbl_bd
+                fba_model.reactions.get_by_id(rxn).lower_bound = -dbl_bd
+            except: 
+                fba_model.reactions.get_by_id(rxn).lower_bound = dbl_bd
+                fba_model.reactions.get_by_id(rxn).upper_bound = -dbl_bd
+
+        fba_model.reactions.vGLT.upper_bound = 5
+        fba_model.reactions.vSUC.lower_bound = 0.05
+        fba_model.reactions.vGLYCO.lower_bound = 0.05
+        fba_model.reactions.vTreha.lower_bound = 0.05
+
+        ## run FBA
+        fba_model.objective = fba_model.reactions.vADH
+        # add to sample_flux_responses
+        sample_flux_responses.append(fba_model.optimize().fluxes)
+        # reset the fba model
+        fba_model = cobra.io.read_sbml_model(cobra_file)
+    # return sample_flux_responses
+    b = pd.concat(sample_flux_responses, axis=1).T.reset_index().drop(labels='index', axis=1)
+    b.columns = ['v_'+i for i in b.columns]
+    return b
+
+def make_FBA_test_data(ant_file, sbml_path, data_path, noise_bound, n_noisy):
+    """
+    ant_file = '../data/interim/Antimony/Simplified_Teusink_yeast.ant'
+    sbml_path = "../data/interim/sbml/Simplified_Teusink_yeast_cobra.xml" ## load the fba model
+    data_path="../data/interim/generated_data/simplTeusink-noReg/Simplified_Teusink_yeast_3.csv"
+
+    n_noisy = 5 (int)
+    noise_bound=2 (int)
+    """
     
-    internals = [i.id for i in model.metabolites]
-    enzymes = [i for i in noFluxData.columns if 'e_' in i]
-    externals = [i for i in noFluxData.columns if i not in (internals + enzymes)]
+    fba_model = cobra.io.read_sbml_model(sbml_path)
+    N = cobra.util.array.create_stoichiometric_matrix(fba_model)
 
-    model.reactions.vGLT.upper_bound = 50
-    model.reactions.vGLT.lower_bound = 50
-
-    #model.reactions.vADH.upper_bound = 1000
-    model.reactions.vADH.lower_bound = 0.15
-
-    model.reactions.vG3PDH.upper_bound = 0.15
-    model.reactions.vG3PDH.lower_bound = 0.15
-
-    model.reactions.vGLYCO.upper_bound = 0.15
-    model.reactions.vGLYCO.lower_bound = 0.15
-
-    model.objective = model.reactions.vADH
-
-    for i in model.reactions:
-        if i.lower_bound == -1000:
-            i.lower_bound = 0.15
-
-    fba_fluxes =[]
-    #  these are the fluxes when there are no perturbations
-    sol = model.optimize()
-    fba_fluxes.append(sol.fluxes)
-
-    for reaction in model.reactions: 
-        temp_l = reaction.lower_bound
-        temp_u = reaction.upper_bound
-
-        if reaction.lower_bound==reaction.upper_bound:
-            reaction.upper_bound = reaction.upper_bound * 3
-            reaction.lower_bound = reaction.lower_bound * 3
+    r = te.loada(ant_file)
+    enzymes = ['e_' + i for i in r.getReactionIds()]
+    internal = r.getFloatingSpeciesIds()
+    external = r.getBoundarySpeciesIds()
+    fluxes = ['v_' + i for i in r.getReactionIds()]
+    
+    i = 0
+    while i < 100:
+        diagnosis=[]
+        fba_model = cobra.io.read_sbml_model(sbml_path)
+        team1, team2, all_data = assign_teams(data_path, noise_bound, n_noisy, fluxes)
+        a = calculate_noisy_fba(team1, team2, all_data, sbml_path)
+        for i in range(len(a)):
+            if np.all(np.isclose((N@a.iloc[i]),0)):
+                diagnosis.append(True)
+            else:
+                diagnosis.append(False)
+        if all(diagnosis) == True:
+            print('complete')
+            c = pd.concat([all_data[enzymes+internal+external],a], axis=1)
+            c.to_csv(f'Simplified_Teusink_yeast_3_fba_noisy_data_{n_noisy}-{noise_bound}.csv', index=False)
+            break
         else:
-            reaction.lower_bound = reaction.lower_bound * 3
-        
-        solulu = model.optimize()
-        fba_fluxes.append(solulu.fluxes)
-        reaction.lower_bound = temp_l
-        reaction.upper_bound = temp_u
+            i+=1
 
-    for i in range(len(externals)):
-        fba_fluxes.append(fba_fluxes[0])
+    if i==100:
+        print('could not complete in 100 iterations')
 
-    flux_results = pd.concat(fba_fluxes, axis=1).T.reset_index()
-    flux_results.drop('index', axis=1, inplace=True)
-    flux_results.columns = ['v_' + i for i in flux_results.columns]
-
-    FBA_test_data = pd.concat([noFluxData, flux_results], axis=1)
-    FBA_test_data.to_csv(output_path, index=False)
 
 
 
