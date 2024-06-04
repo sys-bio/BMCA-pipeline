@@ -85,21 +85,7 @@ def generate_data(model_file, perturbation_levels, data_folder):
                             writer.writerow(enzymes + exMet_values + spConc + fluxes)
                         except:
                             pass
-            
-            
-            # perturbed boundary species cases
-            for params in r.getBoundarySpeciesIds():
-                for level in perturbation_level:
-                    r.resetToOrigin()
-                    r.setValue(params, level*r.getValue(params))
-                    
-                    spConc = list(r.simulate(0,1000000)[-1])[1:]
-                    # r.steadyState()
-                    enzymes = [r.getValue(e) for e in e_list]
-                    exMet_values = [r.getValue(m) for m in exMet]
-                    fluxes = list(r.getReactionRates())
-                    
-                    writer.writerow(enzymes + exMet_values + spConc + fluxes) 
+
 
 
 def ant_to_cobra(antimony_file):
@@ -353,13 +339,13 @@ def calculate_e_hat(BMCA_obj, v_hat_obs, x_terms, y_terms):
 
     return aesara.tensor.reciprocal(product)
 
-def plot_elbo(approx, output_dir, n_iter):
+def plot_elbo(approx, output_dir, n_iter, x_start=0):
     with sns.plotting_context('notebook', font_scale=1.2):
 
         fig = plt.figure(figsize=(5,4))
         plt.plot(approx.hist + 30, '.', rasterized=True, ms=1)
         # plt.ylim([-1E1, 1E3])
-        plt.xlim([0, n_iter])
+        plt.xlim([x_start, n_iter])
         sns.despine(trim=True, offset=10)
 
         plt.ylabel('-ELBO')
@@ -676,9 +662,9 @@ def calculate_noisy_fba(team1, team2, all_data, cobra_file):
                 fba_model.reactions.get_by_id(rxn).upper_bound = -dbl_bd
 
         fba_model.reactions.vGLT.upper_bound = 5
-        fba_model.reactions.vSUC.lower_bound = 0.05
-        fba_model.reactions.vGLYCO.lower_bound = 0.05
-        fba_model.reactions.vTreha.lower_bound = 0.05
+        fba_model.reactions.vSUC.lower_bound = 0.01#0.05
+        fba_model.reactions.vGLYCO.lower_bound = 0.01#0.05
+        fba_model.reactions.vTreha.lower_bound = 0.01#0.05
 
         ## run FBA
         fba_model.objective = fba_model.reactions.vADH
@@ -691,14 +677,14 @@ def calculate_noisy_fba(team1, team2, all_data, cobra_file):
     b.columns = ['v_'+i for i in b.columns]
     return b
 
-def make_FBA_test_data(ant_file, sbml_path, data_path, noise_bound, n_noisy):
+def make_FBA_test_data(ant_file, sbml_path, data_path, noise_bound, n_noisy, pt):
     """
     ant_file = '../data/interim/Antimony/Simplified_Teusink_yeast.ant'
     sbml_path = "../data/interim/sbml/Simplified_Teusink_yeast_cobra.xml" ## load the fba model
     data_path="../data/interim/generated_data/simplTeusink-noReg/Simplified_Teusink_yeast_3.csv"
 
-    n_noisy = 5 (int)
-    noise_bound=2 (int)
+    n_noisy = 5 #(int) number of species that will have random noise added
+    noise_bound=2 #(int) maximum amount of noise that will be applied to species
     """
     
     fba_model = cobra.io.read_sbml_model(sbml_path)
@@ -724,7 +710,7 @@ def make_FBA_test_data(ant_file, sbml_path, data_path, noise_bound, n_noisy):
         if all(diagnosis) == True:
             print('complete')
             c = pd.concat([all_data[enzymes+internal+external],a], axis=1)
-            c.to_csv(f'Simplified_Teusink_yeast_3_fba_noisy_data_{n_noisy}-{noise_bound}.csv', index=False)
+            c.to_csv(f'SimplTeusink_{pt}_fba_noisy_data_{n_noisy}-{noise_bound}_0.csv', index=False)
             break
         else:
             i+=1
