@@ -1,0 +1,24 @@
+wu2004.ipynb
+hackett.ipynb
+giersch.csv
+jol2012.yaml
+emll/test_models/*
+emll/__pycache*
+
+
+**/top3breakdown.csv
+**/top3summary.csv
+**/medianPredictedExs.csv
+**/predictedFCCmedians.csv
+**/predictedFCCs.csv
+
+
+# plots
+**/elbo_convergence.svg
+**/E_*.png
+**/anova_fscores_*.png
+
+# cache files
+__pycache*
+
+src/__pycache__/*.pyc
