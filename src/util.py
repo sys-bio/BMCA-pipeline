@@ -22,7 +22,7 @@ from emll.aesara_utils import LeastSquaresSolve
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-def generate_data(model_file, perturbation_levels, data_folder):
+def generate_data(model_file, perturbation_levels, data_folder, concurrent=1):
     """
     Takes in SBML model_file and creates perturbation data files. 
     Deposits perturbation data files into data_folder
@@ -70,23 +70,23 @@ def generate_data(model_file, perturbation_levels, data_folder):
             
             # perturbed enzyme cases
             if cont:
-                for params in e_list:
-                    for level in perturbation_level:
-                        try: 
-                            r.resetToOrigin()
-                            r.setValue(params, level*r.getValue(params))
-                            
-                            spConc = list(r.simulate(0,1000000)[-1])[1:]
-                            # r.steadyState()
-                            enzymes = [r.getValue(e) for e in e_list]
-                            exMet_values = [r.getValue(m) for m in exMet]
-                            fluxes = list(r.getReactionRates())
-                            
-                            writer.writerow(enzymes + exMet_values + spConc + fluxes)
-                        except:
-                            pass
-
-
+                if concurrent==1:
+                    for params in e_list:
+                        for level in perturbation_level:
+                            try: 
+                                r.resetToOrigin()
+                                r.setValue(params, level*r.getValue(params))
+                                
+                                spConc = list(r.simulate(0,1000000)[-1])[1:]
+                                # r.steadyState()
+                                enzymes = [r.getValue(e) for e in e_list]
+                                exMet_values = [r.getValue(m) for m in exMet]
+                                fluxes = list(r.getReactionRates())
+                                
+                                writer.writerow(enzymes + exMet_values + spConc + fluxes)
+                            except:
+                                pass
+                
 
 def ant_to_cobra(antimony_file):
     """
@@ -684,7 +684,7 @@ def make_FBA_test_data(ant_file, sbml_path, data_path, noise_bound, n_noisy, pt)
     data_path="../data/interim/generated_data/simplTeusink-noReg/Simplified_Teusink_yeast_3.csv"
 
     n_noisy = 5 #(int) number of species that will have random noise added
-    noise_bound=2 #(int) maximum amount of noise that will be applied to species
+    noise_bound=2 #(int) maximum amount of noise that will be applied to species (in %)
     """
     
     fba_model = cobra.io.read_sbml_model(sbml_path)
