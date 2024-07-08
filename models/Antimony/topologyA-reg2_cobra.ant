@@ -1,0 +1,35 @@
+// Compartments and Species:
+compartment extracellular, cytosol;
+species Ai__ in cytosol, B__ in cytosol, C__ in cytosol, D__ in cytosol;
+species E__ in cytosol, F__ in cytosol, G__ in cytosol, H__ in cytosol;
+species I__ in cytosol, J__ in cytosol, K__ in cytosol;
+
+
+vKIL: Ai__ -> B__; 1;
+vLIM: B__ -> C__; 1;
+vMIK: B__ -> ; 1;
+vNOV: 2.0 B__ -> ; 1;
+vOSC: C__ -> D__; 1;
+vPAP: D__ -> 2.0 E__; 1;
+vQUE: E__ -> F__; 1;
+vROM: F__ -> G__; 1;
+vSIE: G__ -> H__; 1;
+vTAN: H__ -> I__; 1;
+vUNI: I__ -> J__; 1;
+vVIC: J__ -> K__; 1;
+vWHI: 2.0 K__ -> ; 1;
+vXRA:  -> Ai__; 1;
+vYAN: K__ -> ; 1;
+vZUL: E__ -> ; 1;
+
+Ai__ = 1;
+B__ = 1;
+C__ = 1;
+D__ = 1;
+E__ = 1;
+F__ = 1;
+G__ = 1;
+H__ = 1;
+I__ = 1;
+J__ = 1;
+K__ = 1;
