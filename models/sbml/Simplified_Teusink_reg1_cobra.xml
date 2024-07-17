@@ -1,0 +1,839 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level3/version1/core" level="3" version="1">
+  <model metaid="__main" id="__main">
+    <listOfUnitDefinitions>
+      <unitDefinition id="mM"/>
+      <unitDefinition id="mMpermin"/>
+      <unitDefinition id="mmolepermin"/>
+      <unitDefinition id="permin"/>
+    </listOfUnitDefinitions>
+    <listOfCompartments>
+      <compartment id="extracellular" spatialDimensions="3" size="1" constant="true"/>
+      <compartment id="cytosol" spatialDimensions="3" size="1" constant="true"/>
+    </listOfCompartments>
+    <listOfSpecies>
+      <species id="GLCi" compartment="cytosol" initialAmount="0.087" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="G6P" compartment="cytosol" initialAmount="2.45" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="F6P" compartment="cytosol" initialAmount="0.62" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="F16P" compartment="cytosol" initialAmount="5.51" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="TRIO" compartment="cytosol" initialAmount="0.96" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="BPG" compartment="cytosol" initialAmount="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="P3G" compartment="cytosol" initialAmount="0.9" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="P2G" compartment="cytosol" initialAmount="0.12" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="PEP" compartment="cytosol" initialAmount="0.07" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="PYR" compartment="cytosol" initialAmount="1.85" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="ACE" compartment="cytosol" initialAmount="0.17" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="GLCo" compartment="extracellular" initialConcentration="50" hasOnlySubstanceUnits="false" boundaryCondition="true" constant="false"/>
+      <species id="ETOH" compartment="cytosol" initialConcentration="50" hasOnlySubstanceUnits="false" boundaryCondition="true" constant="false"/>
+      <species id="GLY" compartment="cytosol" initialConcentration="0.15" hasOnlySubstanceUnits="false" boundaryCondition="true" constant="false"/>
+    </listOfSpecies>
+    <listOfParameters>
+      <parameter id="e_vGLK" value="1" constant="true"/>
+      <parameter id="Vm1" value="5.6" constant="true"/>
+      <parameter id="Km1" value="0.5" constant="true"/>
+      <parameter id="Keq1" value="0.01" constant="true"/>
+      <parameter id="Km2" value="0.5" constant="true"/>
+      <parameter id="e_vPGI" value="1" constant="true"/>
+      <parameter id="Vm2" value="7.8" constant="true"/>
+      <parameter id="Km3" value="0.5" constant="true"/>
+      <parameter id="Keq2" value="4" constant="true"/>
+      <parameter id="Km4" value="0.5" constant="true"/>
+      <parameter id="e_vGLYCO" value="1" constant="true"/>
+      <parameter id="k1" value="0.45" constant="true"/>
+      <parameter id="e_vTreha" value="1" constant="true"/>
+      <parameter id="k2" value="2.3" constant="true"/>
+      <parameter id="e_vPFK" value="1" constant="true"/>
+      <parameter id="Vm3" value="6.7" constant="true"/>
+      <parameter id="Km5" value="0.5" constant="true"/>
+      <parameter id="Keq3" value="4" constant="true"/>
+      <parameter id="Km6" value="0.5" constant="true"/>
+      <parameter id="KPyr_Ref" value="0.05" constant="true"/>
+      <parameter id="e_vALD" value="1" constant="true"/>
+      <parameter id="Vm4" value="4.6" constant="true"/>
+      <parameter id="Km7" value="0.5" constant="true"/>
+      <parameter id="Km8" value="0.5" constant="true"/>
+      <parameter id="e_vGAPDH" value="1" constant="true"/>
+      <parameter id="Vm5" value="6.2" constant="true"/>
+      <parameter id="Km9" value="0.5" constant="true"/>
+      <parameter id="Km10" value="0.5" constant="true"/>
+      <parameter id="e_vPGK" value="1" constant="true"/>
+      <parameter id="Vm6" value="5.9" constant="true"/>
+      <parameter id="Km11" value="0.5" constant="true"/>
+      <parameter id="Km12" value="0.5" constant="true"/>
+      <parameter id="e_vPGM" value="1" constant="true"/>
+      <parameter id="Vm7" value="6" constant="true"/>
+      <parameter id="Km13" value="0.5" constant="true"/>
+      <parameter id="Km14" value="0.5" constant="true"/>
+      <parameter id="e_vENO" value="1" constant="true"/>
+      <parameter id="Vm8" value="7.1" constant="true"/>
+      <parameter id="Km15" value="0.5" constant="true"/>
+      <parameter id="Km16" value="0.5" constant="true"/>
+      <parameter id="e_vPYK" value="1" constant="true"/>
+      <parameter id="Vm9" value="4.6" constant="true"/>
+      <parameter id="Km17" value="0.5" constant="true"/>
+      <parameter id="Km18" value="0.5" constant="true"/>
+      <parameter id="e_vPDC" value="1" constant="true"/>
+      <parameter id="Vm10" value="4.7" constant="true"/>
+      <parameter id="Km19" value="0.5" constant="true"/>
+      <parameter id="Km20" value="0.5" constant="true"/>
+      <parameter id="e_vSUC" value="1" constant="true"/>
+      <parameter id="k3" value="1.7" constant="true"/>
+      <parameter id="e_vGLT" value="1" constant="true"/>
+      <parameter id="Vm11" value="5.2" constant="true"/>
+      <parameter id="Km21" value="0.5" constant="true"/>
+      <parameter id="Km22" value="0.5" constant="true"/>
+      <parameter id="e_vADH" value="1" constant="true"/>
+      <parameter id="Vm12" value="5.3" constant="true"/>
+      <parameter id="Km23" value="0.5" constant="true"/>
+      <parameter id="e_vG3PDH" value="1" constant="true"/>
+      <parameter id="k4" value="0.56" constant="true"/>
+      <parameter id="SUM_P" value="4.1" constant="true"/>
+      <parameter id="F26BP" value="0.02" constant="true"/>
+      <parameter id="KeqAK" value="0.45" units="dimensionless" constant="true"/>
+      <parameter id="gR" value="5.12" units="dimensionless" constant="true"/>
+      <parameter id="KmPFKF6P" value="0.1" units="mM" constant="true"/>
+      <parameter id="KmPFKATP" value="0.71" units="mM" constant="true"/>
+      <parameter id="Lzero" value="0.66" units="dimensionless" constant="true"/>
+      <parameter id="CiPFKATP" value="100" units="dimensionless" constant="true"/>
+      <parameter id="KiPFKATP" value="0.65" units="mM" constant="true"/>
+      <parameter id="CPFKAMP" value="0.0845" units="dimensionless" constant="true"/>
+      <parameter id="KPFKAMP" value="0.0995" units="mM" constant="true"/>
+      <parameter id="CPFKF26BP" value="0.0174" units="dimensionless" constant="true"/>
+      <parameter id="KPFKF26BP" value="0.000682" units="mM" constant="true"/>
+      <parameter id="CPFKF16BP" value="0.397" units="dimensionless" constant="true"/>
+      <parameter id="KPFKF16BP" value="0.111" units="mM" constant="true"/>
+      <parameter id="CPFKATP" value="3" units="dimensionless" constant="true"/>
+      <parameter id="KeqTPI" value="0.045" units="dimensionless" constant="true"/>
+      <parameter id="vGLK_VmGLK" value="226.452" units="mMpermin" constant="true"/>
+      <parameter id="vGLK_KmGLKGLCi" value="0.08" units="mM" constant="true"/>
+      <parameter id="vGLK_KmGLKATP" value="0.15" units="mM" constant="true"/>
+      <parameter id="vGLK_KeqGLK" value="3800" units="dimensionless" constant="true"/>
+      <parameter id="vGLK_KmGLKG6P" value="30" units="mM" constant="true"/>
+      <parameter id="vGLK_KmGLKADP" value="0.23" units="mM" constant="true"/>
+      <parameter id="vPGI_VmPGI_2" value="339.677" units="mMpermin" constant="true"/>
+      <parameter id="vPGI_KmPGIG6P_2" value="1.4" units="mM" constant="true"/>
+      <parameter id="vPGI_KeqPGI_2" value="0.314" units="dimensionless" constant="true"/>
+      <parameter id="vPGI_KmPGIF6P_2" value="0.3" units="mM" constant="true"/>
+      <parameter id="vGLYCO_KGLYCOGEN_3" value="6" units="mMpermin" constant="true"/>
+      <parameter id="vTreha_KTREHALOSE" value="2.4" units="mMpermin" constant="true"/>
+      <parameter id="vPFK_VmPFK" value="182.903" units="mMpermin" constant="true"/>
+      <parameter id="vALD_VmALD" value="322.258" units="mMpermin" constant="true"/>
+      <parameter id="vALD_KmALDF16P" value="0.3" units="mM" constant="true"/>
+      <parameter id="vALD_KeqALD" value="0.069" units="dimensionless" constant="true"/>
+      <parameter id="vALD_KmALDGAP" value="2" units="mM" constant="true"/>
+      <parameter id="vALD_KmALDDHAP" value="2.4" units="mM" constant="true"/>
+      <parameter id="vALD_KmALDGAPi" value="10" units="mM" constant="true"/>
+      <parameter id="vGAPDH_VmGAPDHf" value="1184.52" units="mMpermin" constant="true"/>
+      <parameter id="vGAPDH_KmGAPDHGAP" value="0.21" units="mM" constant="true"/>
+      <parameter id="vGAPDH_KmGAPDHNAD" value="0.09" units="mM" constant="true"/>
+      <parameter id="vGAPDH_VmGAPDHr" value="6549.8" units="mMpermin" constant="true"/>
+      <parameter id="vGAPDH_KmGAPDHBPG" value="0.0098" units="mM" constant="true"/>
+      <parameter id="vGAPDH_KmGAPDHNADH" value="0.06" units="mM" constant="true"/>
+      <parameter id="vPGK_VmPGK" value="1306.45" units="mMpermin" constant="true"/>
+      <parameter id="vPGK_KmPGKP3G" value="0.53" units="mM" constant="true"/>
+      <parameter id="vPGK_KmPGKATP" value="0.3" units="mM" constant="true"/>
+      <parameter id="vPGK_KeqPGK" value="3200" units="dimensionless" constant="true"/>
+      <parameter id="vPGK_KmPGKBPG" value="0.003" units="mM" constant="true"/>
+      <parameter id="vPGK_KmPGKADP" value="0.2" units="mM" constant="true"/>
+      <parameter id="vPGM_VmPGM" value="2525.81" units="mMpermin" constant="true"/>
+      <parameter id="vPGM_KmPGMP3G" value="1.2" units="mM" constant="true"/>
+      <parameter id="vPGM_KeqPGM" value="0.19" units="dimensionless" constant="true"/>
+      <parameter id="vPGM_KmPGMP2G" value="0.08" units="mM" constant="true"/>
+      <parameter id="vENO_VmENO" value="365.806" units="mMpermin" constant="true"/>
+      <parameter id="vENO_KmENOP2G" value="0.04" units="mM" constant="true"/>
+      <parameter id="vENO_KeqENO" value="6.7" units="dimensionless" constant="true"/>
+      <parameter id="vENO_KmENOPEP" value="0.5" units="mM" constant="true"/>
+      <parameter id="vPYK_VmPYK" value="1088.71" units="mMpermin" constant="true"/>
+      <parameter id="vPYK_KmPYKPEP" value="0.14" units="mM" constant="true"/>
+      <parameter id="vPYK_KmPYKADP" value="0.53" units="mM" constant="true"/>
+      <parameter id="vPYK_KeqPYK" value="6500" units="dimensionless" constant="true"/>
+      <parameter id="vPYK_KmPYKPYR" value="21" units="mM" constant="true"/>
+      <parameter id="vPYK_KmPYKATP" value="1.5" units="mM" constant="true"/>
+      <parameter id="vPDC_VmPDC" value="174.194" units="mMpermin" constant="true"/>
+      <parameter id="vPDC_nPDC" value="1.9" units="dimensionless" constant="true"/>
+      <parameter id="vPDC_KmPDCPYR" value="4.33" units="mM" constant="true"/>
+      <parameter id="vSUC_KSUCC" value="21.4" constant="true"/>
+      <parameter id="vGLT_VmGLT" value="97.264" units="mmolepermin" constant="true"/>
+      <parameter id="vGLT_KmGLTGLCo" value="1.1918" units="mM" constant="true"/>
+      <parameter id="vGLT_KeqGLT" value="1" units="mM" constant="true"/>
+      <parameter id="vGLT_KmGLTGLCi" value="1.1918" units="mM" constant="true"/>
+      <parameter id="vADH_VmADH" value="810" units="mMpermin" constant="true"/>
+      <parameter id="vADH_KiADHNAD" value="0.92" units="mM" constant="true"/>
+      <parameter id="vADH_KmADHETOH" value="17" units="mM" constant="true"/>
+      <parameter id="vADH_KeqADH" value="6.9e-05" units="dimensionless" constant="true"/>
+      <parameter id="vADH_KmADHNAD" value="0.17" units="mM" constant="true"/>
+      <parameter id="vADH_KmADHNADH" value="0.11" units="mM" constant="true"/>
+      <parameter id="vADH_KiADHNADH" value="0.031" units="mM" constant="true"/>
+      <parameter id="vADH_KmADHACE" value="1.11" units="mM" constant="true"/>
+      <parameter id="vADH_KiADHACE" value="1.1" units="mM" constant="true"/>
+      <parameter id="vADH_KiADHETOH" value="90" units="mM" constant="true"/>
+      <parameter id="vG3PDH_VmG3PDH" value="70.15" units="mMpermin" constant="true"/>
+      <parameter id="vG3PDH_KmG3PDHDHAP" value="0.4" units="mM" constant="true"/>
+      <parameter id="vG3PDH_KmG3PDHNADH" value="0.023" units="mM" constant="true"/>
+      <parameter id="vG3PDH_KeqG3PDH" value="4300" units="dimensionless" constant="true"/>
+      <parameter id="vG3PDH_KmG3PDHGLY" value="1" units="mM" constant="true"/>
+      <parameter id="vG3PDH_KmG3PDHNAD" value="0.93" units="mM" constant="true"/>
+      <parameter id="vATP_KATPASE" value="33.7" units="permin" constant="true"/>
+    </listOfParameters>
+    <listOfReactions>
+      <reaction id="vGLK" reversible="true" fast="false">
+        <listOfReactants>
+          <speciesReference species="GLCi" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="G6P" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> e_vGLK </ci>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <divide/>
+                    <ci> Vm1 </ci>
+                    <ci> Km1 </ci>
+                  </apply>
+                  <apply>
+                    <minus/>
+                    <ci> GLCi </ci>
+                    <apply>
+                      <divide/>
+                      <ci> G6P </ci>
+                      <ci> Keq1 </ci>
+                    </apply>
+                  </apply>
+                </apply>
+                <apply>
+                  <plus/>
+                  <cn type="integer"> 1 </cn>
+                  <apply>
+                    <divide/>
+                    <ci> GLCi </ci>
+                    <ci> Km1 </ci>
+                  </apply>
+                  <apply>
+                    <divide/>
+                    <ci> G6P </ci>
+                    <ci> Km2 </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vPGI" reversible="true" fast="false">
+        <listOfReactants>
+          <speciesReference species="G6P" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="F6P" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> e_vPGI </ci>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <divide/>
+                    <ci> Vm2 </ci>
+                    <ci> Km3 </ci>
+                  </apply>
+                  <apply>
+                    <minus/>
+                    <ci> G6P </ci>
+                    <apply>
+                      <divide/>
+                      <ci> F6P </ci>
+                      <ci> Keq2 </ci>
+                    </apply>
+                  </apply>
+                </apply>
+                <apply>
+                  <plus/>
+                  <cn type="integer"> 1 </cn>
+                  <apply>
+                    <divide/>
+                    <ci> G6P </ci>
+                    <ci> Km3 </ci>
+                  </apply>
+                  <apply>
+                    <divide/>
+                    <ci> F6P </ci>
+                    <ci> Km4 </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vGLYCO" reversible="false" fast="false">
+        <listOfReactants>
+          <speciesReference species="G6P" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> e_vGLYCO </ci>
+              <ci> k1 </ci>
+              <ci> G6P </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vTreha" reversible="false" fast="false">
+        <listOfReactants>
+          <speciesReference species="G6P" stoichiometry="2" constant="true"/>
+        </listOfReactants>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> e_vTreha </ci>
+              <ci> k2 </ci>
+              <ci> G6P </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vPFK" reversible="false" fast="false">
+        <listOfReactants>
+          <speciesReference species="F6P" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="F16P" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="PYR"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> e_vPFK </ci>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <divide/>
+                    <ci> Vm3 </ci>
+                    <ci> Km5 </ci>
+                  </apply>
+                  <apply>
+                    <minus/>
+                    <ci> F6P </ci>
+                    <apply>
+                      <divide/>
+                      <ci> F16P </ci>
+                      <ci> Keq3 </ci>
+                    </apply>
+                  </apply>
+                </apply>
+                <apply>
+                  <plus/>
+                  <cn type="integer"> 1 </cn>
+                  <apply>
+                    <divide/>
+                    <ci> F6P </ci>
+                    <ci> Km5 </ci>
+                  </apply>
+                  <apply>
+                    <divide/>
+                    <ci> F16P </ci>
+                    <ci> Km6 </ci>
+                  </apply>
+                  <apply>
+                    <divide/>
+                    <ci> PYR </ci>
+                    <ci> KPyr_Ref </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vALD" reversible="true" fast="false">
+        <listOfReactants>
+          <speciesReference species="F16P" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="TRIO" stoichiometry="2" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> e_vALD </ci>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <divide/>
+                    <ci> Vm4 </ci>
+                    <ci> Km7 </ci>
+                  </apply>
+                  <apply>
+                    <minus/>
+                    <ci> F16P </ci>
+                    <apply>
+                      <divide/>
+                      <ci> TRIO </ci>
+                      <ci> Keq3 </ci>
+                    </apply>
+                  </apply>
+                </apply>
+                <apply>
+                  <plus/>
+                  <cn type="integer"> 1 </cn>
+                  <apply>
+                    <divide/>
+                    <ci> F16P </ci>
+                    <ci> Km7 </ci>
+                  </apply>
+                  <apply>
+                    <divide/>
+                    <ci> TRIO </ci>
+                    <ci> Km8 </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vGAPDH" reversible="true" fast="false">
+        <listOfReactants>
+          <speciesReference species="TRIO" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="BPG" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> e_vGAPDH </ci>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <divide/>
+                    <ci> Vm5 </ci>
+                    <ci> Km9 </ci>
+                  </apply>
+                  <apply>
+                    <minus/>
+                    <ci> TRIO </ci>
+                    <apply>
+                      <divide/>
+                      <ci> BPG </ci>
+                      <ci> Keq3 </ci>
+                    </apply>
+                  </apply>
+                </apply>
+                <apply>
+                  <plus/>
+                  <cn type="integer"> 1 </cn>
+                  <apply>
+                    <divide/>
+                    <ci> TRIO </ci>
+                    <ci> Km9 </ci>
+                  </apply>
+                  <apply>
+                    <divide/>
+                    <ci> BPG </ci>
+                    <ci> Km10 </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vPGK" reversible="true" fast="false">
+        <listOfReactants>
+          <speciesReference species="BPG" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="P3G" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> e_vPGK </ci>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <divide/>
+                    <ci> Vm6 </ci>
+                    <ci> Km11 </ci>
+                  </apply>
+                  <apply>
+                    <minus/>
+                    <ci> BPG </ci>
+                    <apply>
+                      <divide/>
+                      <ci> P3G </ci>
+                      <ci> Keq3 </ci>
+                    </apply>
+                  </apply>
+                </apply>
+                <apply>
+                  <plus/>
+                  <cn type="integer"> 1 </cn>
+                  <apply>
+                    <divide/>
+                    <ci> BPG </ci>
+                    <ci> Km11 </ci>
+                  </apply>
+                  <apply>
+                    <divide/>
+                    <ci> P3G </ci>
+                    <ci> Km12 </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vPGM" reversible="true" fast="false">
+        <listOfReactants>
+          <speciesReference species="P3G" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="P2G" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> e_vPGM </ci>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <divide/>
+                    <ci> Vm7 </ci>
+                    <ci> Km13 </ci>
+                  </apply>
+                  <apply>
+                    <minus/>
+                    <ci> P3G </ci>
+                    <apply>
+                      <divide/>
+                      <ci> P2G </ci>
+                      <ci> Keq3 </ci>
+                    </apply>
+                  </apply>
+                </apply>
+                <apply>
+                  <plus/>
+                  <cn type="integer"> 1 </cn>
+                  <apply>
+                    <divide/>
+                    <ci> P3G </ci>
+                    <ci> Km13 </ci>
+                  </apply>
+                  <apply>
+                    <divide/>
+                    <ci> P2G </ci>
+                    <ci> Km14 </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vENO" reversible="true" fast="false">
+        <listOfReactants>
+          <speciesReference species="P2G" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="PEP" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> e_vENO </ci>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <divide/>
+                    <ci> Vm8 </ci>
+                    <ci> Km15 </ci>
+                  </apply>
+                  <apply>
+                    <minus/>
+                    <ci> P2G </ci>
+                    <apply>
+                      <divide/>
+                      <ci> PEP </ci>
+                      <ci> Keq3 </ci>
+                    </apply>
+                  </apply>
+                </apply>
+                <apply>
+                  <plus/>
+                  <cn type="integer"> 1 </cn>
+                  <apply>
+                    <divide/>
+                    <ci> P2G </ci>
+                    <ci> Km15 </ci>
+                  </apply>
+                  <apply>
+                    <divide/>
+                    <ci> PEP </ci>
+                    <ci> Km16 </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vPYK" reversible="true" fast="false">
+        <listOfReactants>
+          <speciesReference species="PEP" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="PYR" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> e_vPYK </ci>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <divide/>
+                    <ci> Vm9 </ci>
+                    <ci> Km17 </ci>
+                  </apply>
+                  <apply>
+                    <minus/>
+                    <ci> PEP </ci>
+                    <apply>
+                      <divide/>
+                      <ci> PYR </ci>
+                      <ci> Keq3 </ci>
+                    </apply>
+                  </apply>
+                </apply>
+                <apply>
+                  <plus/>
+                  <cn type="integer"> 1 </cn>
+                  <apply>
+                    <divide/>
+                    <ci> PEP </ci>
+                    <ci> Km17 </ci>
+                  </apply>
+                  <apply>
+                    <divide/>
+                    <ci> PYR </ci>
+                    <ci> Km18 </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vPDC" reversible="false" fast="false">
+        <listOfReactants>
+          <speciesReference species="PYR" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="ACE" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> e_vPDC </ci>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <divide/>
+                    <ci> Vm10 </ci>
+                    <ci> Km19 </ci>
+                  </apply>
+                  <apply>
+                    <minus/>
+                    <ci> PYR </ci>
+                    <apply>
+                      <divide/>
+                      <ci> ACE </ci>
+                      <ci> Keq3 </ci>
+                    </apply>
+                  </apply>
+                </apply>
+                <apply>
+                  <plus/>
+                  <cn type="integer"> 1 </cn>
+                  <apply>
+                    <divide/>
+                    <ci> PYR </ci>
+                    <ci> Km19 </ci>
+                  </apply>
+                  <apply>
+                    <divide/>
+                    <ci> ACE </ci>
+                    <ci> Km20 </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vSUC" reversible="false" fast="false">
+        <listOfReactants>
+          <speciesReference species="ACE" stoichiometry="2" constant="true"/>
+        </listOfReactants>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> e_vSUC </ci>
+              <ci> k3 </ci>
+              <ci> ACE </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vGLT" reversible="true" fast="false">
+        <listOfReactants>
+          <speciesReference species="GLCo" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="GLCi" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> e_vGLT </ci>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <divide/>
+                    <ci> Vm11 </ci>
+                    <ci> Km21 </ci>
+                  </apply>
+                  <apply>
+                    <minus/>
+                    <ci> GLCo </ci>
+                    <apply>
+                      <divide/>
+                      <ci> GLCi </ci>
+                      <ci> Keq3 </ci>
+                    </apply>
+                  </apply>
+                </apply>
+                <apply>
+                  <plus/>
+                  <cn type="integer"> 1 </cn>
+                  <apply>
+                    <divide/>
+                    <ci> GLCo </ci>
+                    <ci> Km21 </ci>
+                  </apply>
+                  <apply>
+                    <divide/>
+                    <ci> GLCi </ci>
+                    <ci> Km22 </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vADH" reversible="true" fast="false">
+        <listOfReactants>
+          <speciesReference species="ACE" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="ETOH" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> e_vADH </ci>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <divide/>
+                    <ci> Vm12 </ci>
+                    <ci> Km23 </ci>
+                  </apply>
+                  <ci> ACE </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <cn type="integer"> 1 </cn>
+                  <apply>
+                    <divide/>
+                    <ci> ACE </ci>
+                    <ci> Km23 </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vG3PDH" reversible="false" fast="false">
+        <listOfReactants>
+          <speciesReference species="TRIO" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="GLY" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> e_vG3PDH </ci>
+              <ci> k4 </ci>
+              <ci> TRIO </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+    </listOfReactions>
+  </model>
+</sbml>

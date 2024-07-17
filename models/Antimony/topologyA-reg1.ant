@@ -4,7 +4,7 @@ compartment extracellular, cytosol;
 species Ai__ in cytosol, B__ in cytosol, C__ in cytosol, D__ in cytosol;
 species E__ in cytosol, F__ in cytosol, G__ in cytosol, H__ in cytosol;
 species I__ in cytosol, J__ in cytosol, K__ in cytosol;
-species $Ao__ in extracellular, $L__ in cytosol, $M__ in cytosol; # $N__ in cytosol, 
+species $Ao__ in extracellular, $L__ in cytosol, $Z__ in cytosol; # $N__ in cytosol, 
 
 // Reactions:
 vKIL: Ai__ -> B__; e_vKIL*(Vm1/Km1*(Ai__ - B__/Keq1)/(1 + Ai__/Km1 + B__/Km2))
@@ -20,9 +20,9 @@ vTAN: H__ -> I__; e_vTAN*(Vm8/Km15*(H__ - I__/Keq3)/(1 + H__/Km15 + I__/Km16))
 vUNI: I__ -> J__; e_vUNI*(Vm9/Km17*(I__ - J__/Keq3)/(1 + I__/Km17 + J__/Km18)) 
 vVIC: J__ => K__;  e_vVIC*(Vm10/Km19*(J__ - K__/Keq3)/(1 + J__/Km19 + K__/Km20)) 
 vWHI: 2 K__ =>; e_vWHI*(k3*K__);
-vXRA: $Ao__ -> Ai__; e_vXRA*(Vm11/Km21*(Ao__ - Ai__/Keq3)/(1 + Ao__/Km21 + Ai__/Km22))  
+vALP: $Ao__ -> Ai__; e_vALP*(Vm11/Km21*(Ao__ - Ai__/Keq3)/(1 + Ao__/Km21 + Ai__/Km22))  
 vYAN: K__ -> $L__; e_vYAN*(Vm12/Km23*K__/(1 + K__/Km23))  
-vZUL: E__ => $M__; e_vZUL*(k4*E__)
+vZUL: E__ => $Z__; e_vZUL*(k4*E__)
 
 e_vKIL=1;
 e_vLIM=1;
@@ -37,7 +37,7 @@ e_vTAN=1;
 e_vUNI=1;
 e_vVIC=1;
 e_vWHI=1;
-e_vXRA=1;
+e_vALP=1;
 e_vYAN=1;
 e_vZUL=1;
 
@@ -75,7 +75,7 @@ J__ = 1.85;
 K__ = 0.17;
 Ao__ = 50;
 L__ = 50;
-M__ = 0.15;
+Z__ = 0.15;
 SUM_P = 4.1;
 F26BP = 0.02;
 
@@ -211,14 +211,14 @@ vVIC_nVIC has dimensionless;
 vVIC_KmVICJ__ = 4.33;
 vVIC_KmVICJ__ has mM;
 vWHI_KN__ = 21.4;
-vXRA_VmXRA = 97.264;
-vXRA_VmXRA has mmolepermin;
-vXRA_KmXRAAo__ = 1.1918;
-vXRA_KmXRAAo__ has mM;
-vXRA_KeqXRA = 1;
-vXRA_KeqXRA has mM;
-vXRA_KmXRAAi__ = 1.1918;
-vXRA_KmXRAAi__ has mM;
+vALP_VmXRA = 97.264;
+vALP_VmXRA has mmolepermin;
+vALP_KmXRAAo__ = 1.1918;
+vALP_KmXRAAo__ has mM;
+vALP_KeqXRA = 1;
+vALP_KeqXRA has mM;
+vALP_KmXRAAi__ = 1.1918;
+vALP_KmXRAAi__ has mM;
 vYAN_VmYAN = 810;
 vYAN_VmYAN has mMpermin;
 vYAN_KiYANNAD = 0.92;
@@ -247,8 +247,8 @@ vZUL_KmZULNYAN = 0.023;
 vZUL_KmZULNYAN has mM;
 vZUL_KeqZUL = 4300;
 vZUL_KeqZUL has dimensionless;
-vZUL_KmZULM__ = 1;
-vZUL_KmZULM__ has mM;
+vZUL_KmZULZ__ = 1;
+vZUL_KmZULZ__ has mM;
 vZUL_KmZULNAD = 0.93;
 vZUL_KmZULNAD has mM;
 vATP_KATPASE = 33.7;
