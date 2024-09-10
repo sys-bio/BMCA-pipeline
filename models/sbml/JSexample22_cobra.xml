@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<sbml xmlns="http://www.sbml.org/sbml/level3/version1/core" level="3" version="1">
+<sbml xmlns="http://www.sbml.org/sbml/level3/version2/core" level="3" version="2">
   <model metaid="__main" id="__main">
     <listOfCompartments>
       <compartment id="extracellular" spatialDimensions="3" size="1" constant="true"/>
@@ -18,10 +18,10 @@
       <species id="M" compartment="cytosol" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
       <species id="N" compartment="cytosol" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
       <species id="O" compartment="cytosol" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="R" compartment="extracellular" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="R" compartment="cytosol" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
     </listOfSpecies>
     <listOfReactions>
-      <reaction id="v2" reversible="true" fast="false">
+      <reaction id="v1" reversible="true">
         <listOfProducts>
           <speciesReference species="B" stoichiometry="1" constant="true"/>
         </listOfProducts>
@@ -31,7 +31,7 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="v3" reversible="true" fast="false">
+      <reaction id="v2" reversible="true">
         <listOfReactants>
           <speciesReference species="B" stoichiometry="1" constant="true"/>
         </listOfReactants>
@@ -44,7 +44,7 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="v13" reversible="true" fast="false">
+      <reaction id="v3" reversible="true">
         <listOfReactants>
           <speciesReference species="R" stoichiometry="1" constant="true"/>
         </listOfReactants>
@@ -54,7 +54,7 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="v4" reversible="true" fast="false">
+      <reaction id="v4" reversible="true">
         <listOfReactants>
           <speciesReference species="B" stoichiometry="1" constant="true"/>
         </listOfReactants>
@@ -67,7 +67,7 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="v5" reversible="true" fast="false">
+      <reaction id="v5" reversible="true">
         <listOfReactants>
           <speciesReference species="C" stoichiometry="1" constant="true"/>
         </listOfReactants>
@@ -80,7 +80,7 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="v6" reversible="true" fast="false">
+      <reaction id="v6" reversible="true">
         <listOfReactants>
           <speciesReference species="D" stoichiometry="1" constant="true"/>
         </listOfReactants>
@@ -93,7 +93,7 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="v7" reversible="true" fast="false">
+      <reaction id="v7" reversible="true">
         <listOfReactants>
           <speciesReference species="E" stoichiometry="1" constant="true"/>
         </listOfReactants>
@@ -103,7 +103,7 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="v8" reversible="true" fast="false">
+      <reaction id="v8" reversible="true">
         <listOfReactants>
           <speciesReference species="D" stoichiometry="1" constant="true"/>
         </listOfReactants>
@@ -116,7 +116,7 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="v9" reversible="true" fast="false">
+      <reaction id="v9" reversible="true">
         <listOfReactants>
           <speciesReference species="D" stoichiometry="1" constant="true"/>
         </listOfReactants>
@@ -129,7 +129,7 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="v10" reversible="true" fast="false">
+      <reaction id="v10" reversible="true">
         <listOfReactants>
           <speciesReference species="G" stoichiometry="1" constant="true"/>
         </listOfReactants>
@@ -142,7 +142,7 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="v11" reversible="true" fast="false">
+      <reaction id="v11" reversible="true">
         <listOfReactants>
           <speciesReference species="H" stoichiometry="1" constant="true"/>
         </listOfReactants>
@@ -155,7 +155,7 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="v12" reversible="true" fast="false">
+      <reaction id="v12" reversible="true">
         <listOfReactants>
           <speciesReference species="I" stoichiometry="1" constant="true"/>
         </listOfReactants>
@@ -165,7 +165,7 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="v14" reversible="true" fast="false">
+      <reaction id="v13" reversible="true">
         <listOfReactants>
           <speciesReference species="F" stoichiometry="1" constant="true"/>
         </listOfReactants>
@@ -175,7 +175,7 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="v15" reversible="true" fast="false">
+      <reaction id="v14" reversible="true">
         <listOfReactants>
           <speciesReference species="F" stoichiometry="1" constant="true"/>
         </listOfReactants>
@@ -188,7 +188,7 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="v16" reversible="true" fast="false">
+      <reaction id="v15" reversible="true">
         <listOfReactants>
           <speciesReference species="L" stoichiometry="1" constant="true"/>
         </listOfReactants>
@@ -201,7 +201,7 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="v17" reversible="true" fast="false">
+      <reaction id="v16" reversible="true">
         <listOfReactants>
           <speciesReference species="M" stoichiometry="1" constant="true"/>
         </listOfReactants>
@@ -214,7 +214,7 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="v18" reversible="true" fast="false">
+      <reaction id="v17" reversible="true">
         <listOfReactants>
           <speciesReference species="N" stoichiometry="1" constant="true"/>
         </listOfReactants>
@@ -227,7 +227,7 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="v19" reversible="true" fast="false">
+      <reaction id="v18" reversible="true">
         <listOfReactants>
           <speciesReference species="O" stoichiometry="1" constant="true"/>
         </listOfReactants>
@@ -237,7 +237,7 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="v21" reversible="true" fast="false">
+      <reaction id="v19" reversible="true">
         <listOfReactants>
           <speciesReference species="O" stoichiometry="1" constant="true"/>
         </listOfReactants>
