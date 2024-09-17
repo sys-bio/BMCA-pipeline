@@ -438,7 +438,7 @@ model *MODEL1505110000()
   vNADH_req: NADH + Q + 4 $Hin -> NAD + QH2 + 4 Hout; e_vNADH_req*Function_for_NDH1(NADH_req_Vmax, Hin, Hout, NADH, Q, NAD, QH2, KeqNDH);
   vPNT_req: NAD + NADPH -> NADH + NADP; e_vPNT_req*cell*Function_for_PNT(PNT_req_Keq, NAD, NADH, NADP, NADPH, PNT_req_k);
   vADK: AMP + ATP -> 2 ADP; e_vADK*cell*Function_for_ADK(ADP, AMP, ATP, ADK_Keq, ADK_k);
-  ATP_syn: ADP + P + 4 Hout -> ATP + 4 $Hin; Function_for_ATP_SYN(ATP_syn_Vmax, Hin, Hout, ADP, P, ATP, ATP_syn_Keq);
+  vATP_syn: ADP + P + 4 Hout -> ATP + 4 $Hin; e_vATP_syn*Function_for_ATP_SYN(ATP_syn_Vmax, Hin, Hout, ADP, P, ATP, ATP_syn_Keq);
   vCYA: ATP -> CAMP + 2 P; e_vCYA*cell*Function_for_CYA(ATP, CAMP, CYA_Keq, P, CYA_k, eiiaP, CYA_KaeiiaP);
   vDOS: CAMP -> AMP; e_vDOS*cell*Function_for_DOS(AMP, CAMP, DOS_Keq, DOS_k);
   vACK: ACP + ADP -> ACEx + ATP; e_vACK*cell*Function_for_ACK(ACEx, ACP, ADP, ATP, ACK_Keq, ACK_KmACE, ACK_KmACP, ACK_KmADP, ACK_KmATP, ACK_Vmax, cell);
@@ -449,18 +449,18 @@ model *MODEL1505110000()
   vPTS_2: eiia + hprP -> eiiaP + hpr; e_vPTS_2*cell*(PTS_2_k1*eiia*hprP - PTS_2_k2*eiiaP*hpr);
   vPTS_3: eiicb + eiiaP -> eiicbP + eiia; e_vPTS_3*cell*(PTS_3_k1*eiicb*eiiaP - PTS_3_k2*eiicbP*eiia);
   vPTS_4: GLCp + eiicbP -> G6P + eiicb; e_vPTS_4*Function_for_PTS_4(G6P, GLCp, PTS_4_KmG6P, PTS_4_KmGLC, cell, eiicb, eiicbP, PTS_4_kF, PTS_4_kR);
-  GLC_feed:  => GLCx; extracellular*Function_for_GLC_FEED(FEED, cell, extracellular);
+  vGLC_feed:  => GLCx; e_vGLC_feed*extracellular*Function_for_GLC_FEED(FEED, cell, extracellular);
   vCYTBO: 2 QH2 + 8 $Hin + $O2 -> 2 Q + 8 Hout + 2 $H2O; e_vCYTBO*Function_for_CYTBO(CYTBO_Vmax, Hin, Hout, CYTBO_Keq, O2, QH2, Q);
   vSQR: FADH2 + Q -> FAD + QH2; e_vSQR*cell*Function_for_SQR(FADH2, Q, FAD, QH2, SQR_Keq, SQR_Vmax);
   vNDHII: NADH + Q -> NAD + QH2; e_vNDHII*cell*Function_for_NDH2(NDHII_Vmax, NADH, Q, NAD, QH2, KeqNDH);
-  GROWTH: 116 G6P + 204 E4P + 845 PGA3 + 1010 OAA + 610 AKG + 1601 PYR + 507 R5P + 293 PEP + 73 GAP + 40 F6P + 10169 NADPH + 2118 ACCOA + 2004 NAD + 30508 ATP => 10169 NADP + 2118 $COA + 2004 NADH + 30508 ADP + 30508 P; cell*Function_for_GROWTH(GROWTH_Vmax, G6P, E4P, PGA3, OAA, AKG, PYR, R5P, PEP, GAP, F6P, NADPH, ACCOA, NAD, ATP, GROWTH_KmG6P, GROWTH_KmE4P, GROWTH_KmPGA3, GROWTH_KmOAA, GROWTH_KmAKG, GROWTH_KmPYR, GROWTH_KmR5P, GROWTH_KmPEP, GROWTH_KmGAP, GROWTH_KmF6P, GROWTH_KmNADPH, GROWTH_KmACCOA, GROWTH_KmNAD, GROWTH_KmATP);
-  ATP_MAINTENANCE: ATP -> ADP + P; cell*Function_for_ATP_MAINTENANCE(ATP_MAINTENANCE_Vmax, ADP, P, ATP, ATP_MAINTENANCE_Keq);
-  XCH_GLC: GLCx -> GLCp; Function_for_XCH_RMM(XCH_GLC_Vmax, GLCx, GLCp, XCH_GLC_Km);
-  PIT: Pp + Hout -> P + $Hin; Function_for_PIT(PIT_Vmax, Hout, Hin, Pp, PIT_KmPp, PIT_Kr, P, PIT_KmP);
-  XCH_P: $Px -> Pp; Function_for_XCH_RMM(XCH_P_Vmax, Px, Pp, XCH_P_Km);
-  XCH_ACE1: ACEx -> ACEp; Function_for_XCH_RMM(XCH_ACE1_Vmax, ACEx, ACEp, XCH_ACE1_Km);
-  _ACE_OUT: ACEx_0 => ; extracellular*_ACE_OUT_k1*ACEx_0;
-  XCH_ACE2: ACEp -> ACEx_0; Function_for_XCH_RMM(XCH_ACE2_Vmax, ACEp, ACEx_0, XCH_ACE2_Km);
+  vGROWTH: 116 G6P + 204 E4P + 845 PGA3 + 1010 OAA + 610 AKG + 1601 PYR + 507 R5P + 293 PEP + 73 GAP + 40 F6P + 10169 NADPH + 2118 ACCOA + 2004 NAD + 30508 ATP => 10169 NADP + 2118 $COA + 2004 NADH + 30508 ADP + 30508 P; e_vGROWTH*cell*Function_for_GROWTH(GROWTH_Vmax, G6P, E4P, PGA3, OAA, AKG, PYR, R5P, PEP, GAP, F6P, NADPH, ACCOA, NAD, ATP, GROWTH_KmG6P, GROWTH_KmE4P, GROWTH_KmPGA3, GROWTH_KmOAA, GROWTH_KmAKG, GROWTH_KmPYR, GROWTH_KmR5P, GROWTH_KmPEP, GROWTH_KmGAP, GROWTH_KmF6P, GROWTH_KmNADPH, GROWTH_KmACCOA, GROWTH_KmNAD, GROWTH_KmATP);
+  vATP_MAINTENANCE: ATP -> ADP + P; e_vATP_MAINTENANCE*cell*Function_for_ATP_MAINTENANCE(ATP_MAINTENANCE_Vmax, ADP, P, ATP, ATP_MAINTENANCE_Keq);
+  vXCH_GLC: GLCx -> GLCp; e_vXCH_GLC*Function_for_XCH_RMM(XCH_GLC_Vmax, GLCx, GLCp, XCH_GLC_Km);
+  vPIT: Pp + Hout -> P + $Hin; e_vPIT*Function_for_PIT(PIT_Vmax, Hout, Hin, Pp, PIT_KmPp, PIT_Kr, P, PIT_KmP);
+  vXCH_P: $Px -> Pp; e_vXCH_P*Function_for_XCH_RMM(XCH_P_Vmax, Px, Pp, XCH_P_Km);
+  vXCH_ACE1: ACEx -> ACEp; e_vXCH_ACE1*Function_for_XCH_RMM(XCH_ACE1_Vmax, ACEx, ACEp, XCH_ACE1_Km);
+  v_ACE_OUT: ACEx_0 => ; e_v_ACE_OUT*extracellular*_ACE_OUT_k1*ACEx_0;
+  vXCH_ACE2: ACEp -> ACEx_0; e_vXCH_ACE2*Function_for_XCH_RMM(XCH_ACE2_Vmax, ACEp, ACEx_0, XCH_ACE2_Km);
   vGL6P_HYDROLYSIS: GL6P -> PGN; e_vGL6P_HYDROLYSIS*cell*Function_for_GL6P_HYDROLYSIS(GL6P_HYDROLYSIS_KGl6Phydrol, GL6P, PGN, GL6P_HYDROLYSIS_KeqGl6Phydrol);
 
   // Species initializations:
@@ -625,6 +625,17 @@ model *MODEL1505110000()
   cell_periplasm has volume;
 
   // Variable initializations:
+  e_vATP_syn = 1
+  e_vGLC_feed = 1
+  e_vGROWTH = 1
+  e_vATP_MAINTENANCE = 1
+  e_vXCH_GLC = 1
+  e_vPIT = 1
+  e_vXCH_P = 1
+  e_vXCH_ACE1 = 1
+  e_v_ACE_OUT = 1
+  e_vXCH_ACE2 = 1
+
   e_vPGI=1
   e_vPFK=1
   e_vFBA=1
@@ -1145,8 +1156,8 @@ model *MODEL1505110000()
   vMAD is "MAE";
   vNADH_req is "NDHI";
   vPNT_req is "PNT";
-  ATP_syn is "ATP_SYN";
-  GLC_feed is "_GLC_FEED";
+  vATP_syn is "ATP_SYN";
+  vGLC_feed is "_GLC_FEED";
 
   model model_entity_is "http://identifiers.org/biomodels.db/MODEL1505110000"
   model description "http://identifiers.org/doi/10.1371/journal.pcbi.1005396"

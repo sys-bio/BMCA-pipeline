@@ -706,7 +706,7 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="ATP_syn" reversible="true">
+      <reaction id="vATP_syn" reversible="true">
         <listOfReactants>
           <speciesReference species="ADP" stoichiometry="1" constant="true"/>
           <speciesReference species="P" stoichiometry="1" constant="true"/>
@@ -868,7 +868,7 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="GLC_feed" reversible="true">
+      <reaction id="vGLC_feed" reversible="true">
         <listOfProducts>
           <speciesReference species="GLCx" stoichiometry="1" constant="true"/>
         </listOfProducts>
@@ -922,7 +922,7 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="GROWTH" reversible="true">
+      <reaction id="vGROWTH" reversible="true">
         <listOfReactants>
           <speciesReference species="G6P" stoichiometry="116" constant="true"/>
           <speciesReference species="E4P" stoichiometry="204" constant="true"/>
@@ -951,7 +951,7 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="ATP_MAINTENANCE" reversible="true">
+      <reaction id="vATP_MAINTENANCE" reversible="true">
         <listOfReactants>
           <speciesReference species="ATP" stoichiometry="1" constant="true"/>
         </listOfReactants>
@@ -965,7 +965,7 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="XCH_GLC" reversible="true">
+      <reaction id="vXCH_GLC" reversible="true">
         <listOfReactants>
           <speciesReference species="GLCx" stoichiometry="1" constant="true"/>
         </listOfReactants>
@@ -978,7 +978,7 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="PIT" reversible="true">
+      <reaction id="vPIT" reversible="true">
         <listOfReactants>
           <speciesReference species="Pp" stoichiometry="1" constant="true"/>
           <speciesReference species="Hout" stoichiometry="1" constant="true"/>
@@ -992,7 +992,7 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="XCH_P" reversible="true">
+      <reaction id="vXCH_P" reversible="true">
         <listOfProducts>
           <speciesReference species="Pp" stoichiometry="1" constant="true"/>
         </listOfProducts>
@@ -1002,7 +1002,7 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="XCH_ACE1" reversible="true">
+      <reaction id="vXCH_ACE1" reversible="true">
         <listOfReactants>
           <speciesReference species="ACEx" stoichiometry="1" constant="true"/>
         </listOfReactants>
@@ -1015,7 +1015,7 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="_ACE_OUT" reversible="true">
+      <reaction id="v_ACE_OUT" reversible="true">
         <listOfReactants>
           <speciesReference species="ACEx_0" stoichiometry="1" constant="true"/>
         </listOfReactants>
@@ -1025,7 +1025,7 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="XCH_ACE2" reversible="true">
+      <reaction id="vXCH_ACE2" reversible="true">
         <listOfReactants>
           <speciesReference species="ACEp" stoichiometry="1" constant="true"/>
         </listOfReactants>
