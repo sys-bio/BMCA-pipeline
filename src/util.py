@@ -2,6 +2,8 @@
 
 import numpy as np
 import scipy as sp
+from scipy.stats import spearmanr
+
 import tellurium as te
 import cobra
 import aesara
@@ -18,9 +20,13 @@ import pandas as pd
 
 from emll.aesara_utils import LeastSquaresSolve
 
+import aesara.tensor as pt
+import pymc as pm
+
 # plotting
 import matplotlib.pyplot as plt
 import seaborn as sns
+import arviz as az
 
 def generate_data(model_file, perturbation_levels, data_folder, concurrent=1):
     """
@@ -172,8 +178,7 @@ def ant_to_cobra(antimony_file):
         with open(f'{output_name}_cobra.ant', 'a') as f:
             f.write(sp + ' = 1;\n')
 
-import aesara.tensor as pt
-import pymc as pm
+
 
 def initialize_elasticity(ela_matrix, name=None, b=0.01, alpha=5, sd=1,
                           m_compartments=None, r_compartments=None):
@@ -677,7 +682,7 @@ def calculate_noisy_fba(team1, team2, all_data, cobra_file):
     b.columns = ['v_'+i for i in b.columns]
     return b
 
-def make_FBA_test_data(ant_file, sbml_path, data_path, noise_bound, n_noisy, pt):
+def make_FBA_test_data(ant_file, sbml_path, data_path, n_noisy, noise_bound, pt):
     """
     ant_file = '../data/interim/Antimony/Simplified_Teusink_yeast.ant'
     sbml_path = "../data/interim/sbml/Simplified_Teusink_yeast_cobra.xml" ## load the fba model
@@ -710,7 +715,7 @@ def make_FBA_test_data(ant_file, sbml_path, data_path, noise_bound, n_noisy, pt)
         if all(diagnosis) == True:
             print('complete')
             c = pd.concat([all_data[enzymes+internal+external],a], axis=1)
-            c.to_csv(f'SimplTeusink_{pt}_fba_noisy_data_{n_noisy}-{noise_bound}_0.csv', index=False)
+            c.to_csv(f'SimplTeusink_fba-noise_pt{pt}_sp{n_noisy}-max{noise_bound}.csv', index=False)
             break
         else:
             i+=1
@@ -719,7 +724,62 @@ def make_FBA_test_data(ant_file, sbml_path, data_path, noise_bound, n_noisy, pt)
         print('could not complete in 100 iterations')
 
 
+def bootstrap_spearman(x, y, num_bootstrap=1000, alpha=0.05):
+    n = len(x)
+    corr_list = []
+
+    # Original Spearman correlation
+    corr_original, p_value = spearmanr(x, y)
+
+    for _ in range(num_bootstrap):
+        # Generate bootstrap samples
+        indices = np.random.randint(0, n, n)
+        x_bootstrap = [x[i] for i in indices]
+        y_bootstrap = [y[i] for i in indices]
+
+        # Calculate Spearman correlation for the bootstrap sample
+        corr, _ = spearmanr(x_bootstrap, y_bootstrap)
+        corr_list.append(corr)
+
+    # Convert to numpy array for convenience
+    corr_list = np.array(corr_list)
+    
+    # Calculate the confidence intervals
+    lower_bound = np.percentile(corr_list, (alpha/2) * 100)
+    upper_bound = np.percentile(corr_list, (1 - alpha/2) * 100)
+    
+    return corr_original, p_value, lower_bound, upper_bound
 
 
+def get_az_summary(t): 
+    Ex_mean = az.summary(t)['mean'].reset_index()
+    Ex_mean.columns = ['elasticity', 'mean']
+    Ex_mean = Ex_mean[Ex_mean.elasticity.str.contains("Ex\[")]['mean'].values.flatten().reshape((-1,1))
+    return np.mean(Ex_mean, axis=1)
 
 
+def get_az_mean(traces): 
+    trace_means = []
+    for t in traces: 
+        Ex_mean = az.summary(t)['mean'].reset_index()
+        Ex_mean.columns = ['elasticity', 'mean']
+        Ex_mean = Ex_mean[Ex_mean.elasticity.str.contains("Ex\[")]['mean'].values.flatten().reshape((-1,1))
+        trace_means.append(Ex_mean)
+    Ex = np.concatenate(trace_means, axis=1)
+    return np.mean(Ex, axis=1)
+
+def calculate_slope(x,y): 
+    slope, intercept, r_value, p_value, std_err = sp.stats.linregress(x,y)
+    return slope, intercept, r_value
+
+
+def plt_spr_scatter(dataframe, title):
+    plt = sns.scatterplot(data=dataframe, x='perturbation', y="r", hue='omit', style='omit', s=100, alpha=0.8, zorder=100)
+    plt.grid(True, which='both', axis='both', zorder=0)
+    plt.set(xscale='log')
+    plt.legend(bbox_to_anchor=(1.04, 1), loc="upper left")
+    plt.set_xlabel('fold change in enzyme concentration', size=14)
+    plt.set_ylabel('Spearman rank coefficient, $\it{r}$', size=14)
+    plt.tick_params(axis='both', which='major', labelsize=13)
+    plt.set_title(title, size=20)
+    
