@@ -24,9 +24,11 @@ import emll
 
 class antemll():
 
-    def __init__(self, model_file, data_file, ref_ind=0, filler_v_star=None):
+    def __init__(self, model_file, data_file, cobra_sbml, ref_ind=0, filler_v_star=None):
                 
         self.model_file = model_file
+        self.model = te.loada(model_file)
+
         self.N, self.v_star, self.en, self.xn, self.yn, self.vn, self.x_star = \
             antemll.load_model_data(model_file, data_file, ref_ind, filler_v_star)
         """
@@ -38,8 +40,8 @@ class antemll():
         
         self.n_exp = self.en.shape[0]
 
-        self.Ex = antemll.create_Visser_elasticity_matrix(model_file)
-        self.Ey = antemll.create_Visser_elasticity_matrix(model_file, Ex=False)
+        self.Ex = antemll.create_Visser_elasticity_matrix(model_file, cobra_sbml)
+        self.Ey = antemll.create_Visser_elasticity_matrix(model_file, cobra_sbml, Ex=False)
 
 
     def load_model_data(model_file, data_file, ref_ind, filler_v_star):
@@ -68,7 +70,7 @@ class antemll():
         
         # clean the data
         data = df.drop(df[df[available_fl_sp].lt(0).any(axis=1)].index)
-
+        
         # sorting the data
         
         e = data[available_enz]
@@ -91,6 +93,7 @@ class antemll():
 
         # Normalize to reference values (and drop trivial measurement)
         en = e.divide(e_star)
+        # print(en)
         xn = x.divide(x_star)
         yn = y.divide(y_star)
         vn = v.divide(v_star)
@@ -123,26 +126,24 @@ class antemll():
 
         return N, v_star, en, xn, yn, vn, x_star
     
-    def create_Visser_elasticity_matrix(model_file, Ex=True):
+    def create_Visser_elasticity_matrix(model_file, cobra_smbl, Ex=True):
         """Create an elasticity matrix for metabolites given the model in model.
         E[j,i] represents the elasticity of reaction j for metabolite i.
         stolen from emll.util.create_elasticity_matrix
         """        
         if Ex: # making the Ex matrix
-            # cobra_file = model_file.split('/')[-1]
-            cobra_file = model_file.split('.ant')[0] + '_cobra.ant'
-            print(cobra_file)
+            cobra_ant = model_file.split('.ant')[0]
+            cobra_ant = cobra_ant.split('-')[0] + '_cobra.ant'
+            print(cobra_ant)
                 # check if cobra version exists 
-                # if not, make it
-                
+                # if not, make it.
                 # load the cobra model
 
-            r = te.loada(cobra_file)
+            r = te.loada(cobra_ant)
             r.conservedMoietyAnalysis = True
-            # model = cobra.io.read_sbml_model("../../data/interim/sbml/BIOMD64_cobra_sbml.xml")
-            # model = cobra.io.read_sbml_model("data/interim/sbml/flatTeusink_cobra.xml")
-            model = cobra.io.read_sbml_model("data/interim/sbml/Simplified_Teusink_yeast_cobra.xml")
-            # model = cobra.io.read_sbml_model("data/interim/sbml/JSexample22_cobra.xml")
+            model = cobra.io.read_sbml_model(cobra_smbl)
+            # model = cobra.io.read_sbml_model("../../models/sbml/Simplified_Teusink_yeast_cobra.xml")
+            # model = cobra.io.read_sbml_model("../../../models/sbml/JSexample22_cobra.xml")
 
             n_metabolites = len(model.metabolites)
             n_reactions = len(model.reactions)

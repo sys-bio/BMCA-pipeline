@@ -1,0 +1,1056 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level3/version2/core" level="3" version="2">
+  <model metaid="__main" id="__main">
+    <listOfCompartments>
+      <compartment id="cell" spatialDimensions="3" size="1" constant="true"/>
+      <compartment id="extracellular" spatialDimensions="3" size="1" constant="true"/>
+      <compartment id="cell_periplasm" spatialDimensions="3" size="1" constant="true"/>
+    </listOfCompartments>
+    <listOfSpecies>
+      <species id="ACCOA" compartment="cell" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="ACO" compartment="cell" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="ACP" compartment="cell" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="AKG" compartment="cell" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="BPG" compartment="cell" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="CIT" compartment="cell" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="DAP" compartment="cell" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="E4P" compartment="cell" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="F6P" compartment="cell" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="FDP" compartment="cell" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="FUM" compartment="cell" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="G6P" compartment="cell" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="GAP" compartment="cell" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="GL6P" compartment="cell" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="GLX" compartment="cell" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="ICIT" compartment="cell" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="KDPG" compartment="cell" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="MAL" compartment="cell" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="NAD" compartment="cell" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="NADH" compartment="cell" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="NADP" compartment="cell" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="NADPH" compartment="cell" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="OAA" compartment="cell" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="PEP" compartment="cell" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="PGA2" compartment="cell" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="PGA3" compartment="cell" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="PGN" compartment="cell" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="PYR" compartment="cell" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="Q" compartment="cell" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="QH2" compartment="cell" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="R5P" compartment="cell" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="RU5P" compartment="cell" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="S7P" compartment="cell" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="SUC" compartment="cell" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="SUCCOA" compartment="cell" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="X5P" compartment="cell" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="ei" compartment="cell" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="eiP" compartment="cell" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="eiia" compartment="cell" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="eiiaP" compartment="cell" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="eiicb" compartment="cell" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="eiicbP" compartment="cell" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="hpr" compartment="cell" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="hprP" compartment="cell" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="icd" compartment="cell" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="icdP" compartment="cell" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="tal" compartment="cell" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="talC3" compartment="cell" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="tkt" compartment="cell" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="tktC2" compartment="cell" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="ADP" compartment="cell" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="AMP" compartment="cell" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="ATP" compartment="cell" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="CAMP" compartment="cell" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="P" compartment="cell" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="FAD" compartment="cell" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="FADH2" compartment="cell" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="ACEx" compartment="cell" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="GLCx" compartment="extracellular" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="ACEx_0" compartment="extracellular" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="Hout" compartment="cell_periplasm" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="GLCp" compartment="cell_periplasm" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="Pp" compartment="cell_periplasm" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="ACEp" compartment="cell_periplasm" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+    </listOfSpecies>
+    <listOfReactions>
+      <reaction id="vPGI" reversible="true">
+        <listOfReactants>
+          <speciesReference species="G6P" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="F6P" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vPFK" reversible="true">
+        <listOfReactants>
+          <speciesReference species="ATP" stoichiometry="1" constant="true"/>
+          <speciesReference species="F6P" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="ADP" stoichiometry="1" constant="true"/>
+          <speciesReference species="FDP" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vFBA" reversible="true">
+        <listOfReactants>
+          <speciesReference species="FDP" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="DAP" stoichiometry="1" constant="true"/>
+          <speciesReference species="GAP" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vTPI" reversible="true">
+        <listOfReactants>
+          <speciesReference species="DAP" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="GAP" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vGDH" reversible="true">
+        <listOfReactants>
+          <speciesReference species="GAP" stoichiometry="1" constant="true"/>
+          <speciesReference species="NAD" stoichiometry="1" constant="true"/>
+          <speciesReference species="P" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="BPG" stoichiometry="1" constant="true"/>
+          <speciesReference species="NADH" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vPGK" reversible="true">
+        <listOfReactants>
+          <speciesReference species="ADP" stoichiometry="1" constant="true"/>
+          <speciesReference species="BPG" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="ATP" stoichiometry="1" constant="true"/>
+          <speciesReference species="PGA3" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vGPM" reversible="true">
+        <listOfReactants>
+          <speciesReference species="PGA3" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="PGA2" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vENO" reversible="true">
+        <listOfReactants>
+          <speciesReference species="PGA2" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="PEP" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vPYK" reversible="true">
+        <listOfReactants>
+          <speciesReference species="ADP" stoichiometry="1" constant="true"/>
+          <speciesReference species="PEP" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="ATP" stoichiometry="1" constant="true"/>
+          <speciesReference species="PYR" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vZWF" reversible="true">
+        <listOfReactants>
+          <speciesReference species="G6P" stoichiometry="1" constant="true"/>
+          <speciesReference species="NADP" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="GL6P" stoichiometry="1" constant="true"/>
+          <speciesReference species="NADPH" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vPGL" reversible="true">
+        <listOfReactants>
+          <speciesReference species="GL6P" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="PGN" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vGND" reversible="true">
+        <listOfReactants>
+          <speciesReference species="NADP" stoichiometry="1" constant="true"/>
+          <speciesReference species="PGN" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="NADPH" stoichiometry="1" constant="true"/>
+          <speciesReference species="RU5P" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vRPE" reversible="true">
+        <listOfReactants>
+          <speciesReference species="RU5P" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="X5P" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vRPI" reversible="true">
+        <listOfReactants>
+          <speciesReference species="RU5P" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="R5P" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vX5P_GAP_TKT" reversible="true">
+        <listOfReactants>
+          <speciesReference species="tkt" stoichiometry="1" constant="true"/>
+          <speciesReference species="X5P" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="GAP" stoichiometry="1" constant="true"/>
+          <speciesReference species="tktC2" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vF6P_E4P_TKT" reversible="true">
+        <listOfReactants>
+          <speciesReference species="E4P" stoichiometry="1" constant="true"/>
+          <speciesReference species="tktC2" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="F6P" stoichiometry="1" constant="true"/>
+          <speciesReference species="tkt" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vS7P_R5P_TKT" reversible="true">
+        <listOfReactants>
+          <speciesReference species="R5P" stoichiometry="1" constant="true"/>
+          <speciesReference species="tktC2" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="S7P" stoichiometry="1" constant="true"/>
+          <speciesReference species="tkt" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vF6P_GAP_TAL" reversible="true">
+        <listOfReactants>
+          <speciesReference species="GAP" stoichiometry="1" constant="true"/>
+          <speciesReference species="talC3" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="F6P" stoichiometry="1" constant="true"/>
+          <speciesReference species="tal" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vS7P_E4P_TAL" reversible="true">
+        <listOfReactants>
+          <speciesReference species="S7P" stoichiometry="1" constant="true"/>
+          <speciesReference species="tal" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="E4P" stoichiometry="1" constant="true"/>
+          <speciesReference species="talC3" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vFBP" reversible="true">
+        <listOfReactants>
+          <speciesReference species="FDP" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="F6P" stoichiometry="1" constant="true"/>
+          <speciesReference species="P" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vPPC" reversible="true">
+        <listOfReactants>
+          <speciesReference species="PEP" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="OAA" stoichiometry="1" constant="true"/>
+          <speciesReference species="P" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vPCK" reversible="true">
+        <listOfReactants>
+          <speciesReference species="ATP" stoichiometry="1" constant="true"/>
+          <speciesReference species="OAA" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="ADP" stoichiometry="1" constant="true"/>
+          <speciesReference species="PEP" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vPPS" reversible="true">
+        <listOfReactants>
+          <speciesReference species="ATP" stoichiometry="1" constant="true"/>
+          <speciesReference species="PYR" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="AMP" stoichiometry="1" constant="true"/>
+          <speciesReference species="PEP" stoichiometry="1" constant="true"/>
+          <speciesReference species="P" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vMAD" reversible="true">
+        <listOfReactants>
+          <speciesReference species="MAL" stoichiometry="1" constant="true"/>
+          <speciesReference species="NAD" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="NADH" stoichiometry="1" constant="true"/>
+          <speciesReference species="PYR" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vPDH" reversible="true">
+        <listOfReactants>
+          <speciesReference species="NAD" stoichiometry="1" constant="true"/>
+          <speciesReference species="PYR" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="ACCOA" stoichiometry="1" constant="true"/>
+          <speciesReference species="NADH" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vGLT" reversible="true">
+        <listOfReactants>
+          <speciesReference species="ACCOA" stoichiometry="1" constant="true"/>
+          <speciesReference species="OAA" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="CIT" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vACN_1" reversible="true">
+        <listOfReactants>
+          <speciesReference species="CIT" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="ACO" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vACN_2" reversible="true">
+        <listOfReactants>
+          <speciesReference species="ACO" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="ICIT" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vICD" reversible="true">
+        <listOfReactants>
+          <speciesReference species="ICIT" stoichiometry="1" constant="true"/>
+          <speciesReference species="NADP" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="AKG" stoichiometry="1" constant="true"/>
+          <speciesReference species="NADPH" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vLPD" reversible="true">
+        <listOfReactants>
+          <speciesReference species="AKG" stoichiometry="1" constant="true"/>
+          <speciesReference species="NAD" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="NADH" stoichiometry="1" constant="true"/>
+          <speciesReference species="SUCCOA" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vSK" reversible="true">
+        <listOfReactants>
+          <speciesReference species="ADP" stoichiometry="1" constant="true"/>
+          <speciesReference species="SUCCOA" stoichiometry="1" constant="true"/>
+          <speciesReference species="P" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="ATP" stoichiometry="1" constant="true"/>
+          <speciesReference species="SUC" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vSDH" reversible="true">
+        <listOfReactants>
+          <speciesReference species="FAD" stoichiometry="1" constant="true"/>
+          <speciesReference species="SUC" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="FUM" stoichiometry="1" constant="true"/>
+          <speciesReference species="FADH2" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vFUMA" reversible="true">
+        <listOfReactants>
+          <speciesReference species="FUM" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="MAL" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vMQO" reversible="true">
+        <listOfReactants>
+          <speciesReference species="MAL" stoichiometry="1" constant="true"/>
+          <speciesReference species="Q" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="OAA" stoichiometry="1" constant="true"/>
+          <speciesReference species="QH2" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vMDH" reversible="true">
+        <listOfReactants>
+          <speciesReference species="QH2" stoichiometry="1" constant="true"/>
+          <speciesReference species="OAA" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="MAL" stoichiometry="1" constant="true"/>
+          <speciesReference species="Q" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vACEA" reversible="true">
+        <listOfReactants>
+          <speciesReference species="ICIT" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="GLX" stoichiometry="1" constant="true"/>
+          <speciesReference species="SUC" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vACEB" reversible="true">
+        <listOfReactants>
+          <speciesReference species="ACCOA" stoichiometry="1" constant="true"/>
+          <speciesReference species="GLX" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="MAL" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vACEK_1" reversible="true">
+        <listOfReactants>
+          <speciesReference species="ATP" stoichiometry="1" constant="true"/>
+          <speciesReference species="icd" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="ADP" stoichiometry="1" constant="true"/>
+          <speciesReference species="icdP" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vACEK_2" reversible="true">
+        <listOfReactants>
+          <speciesReference species="icdP" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="icd" stoichiometry="1" constant="true"/>
+          <speciesReference species="P" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vEDD" reversible="true">
+        <listOfReactants>
+          <speciesReference species="PGN" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="KDPG" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vEDA" reversible="true">
+        <listOfReactants>
+          <speciesReference species="KDPG" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="GAP" stoichiometry="1" constant="true"/>
+          <speciesReference species="PYR" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vNADH_req" reversible="true">
+        <listOfReactants>
+          <speciesReference species="NADH" stoichiometry="1" constant="true"/>
+          <speciesReference species="Q" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="NAD" stoichiometry="1" constant="true"/>
+          <speciesReference species="QH2" stoichiometry="1" constant="true"/>
+          <speciesReference species="Hout" stoichiometry="4" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vPNT_req" reversible="true">
+        <listOfReactants>
+          <speciesReference species="NAD" stoichiometry="1" constant="true"/>
+          <speciesReference species="NADPH" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="NADH" stoichiometry="1" constant="true"/>
+          <speciesReference species="NADP" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vADK" reversible="true">
+        <listOfReactants>
+          <speciesReference species="AMP" stoichiometry="1" constant="true"/>
+          <speciesReference species="ATP" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="ADP" stoichiometry="2" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vATP_syn" reversible="true">
+        <listOfReactants>
+          <speciesReference species="ADP" stoichiometry="1" constant="true"/>
+          <speciesReference species="P" stoichiometry="1" constant="true"/>
+          <speciesReference species="Hout" stoichiometry="4" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="ATP" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vCYA" reversible="true">
+        <listOfReactants>
+          <speciesReference species="ATP" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="CAMP" stoichiometry="1" constant="true"/>
+          <speciesReference species="P" stoichiometry="2" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vDOS" reversible="true">
+        <listOfReactants>
+          <speciesReference species="CAMP" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="AMP" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vACK" reversible="true">
+        <listOfReactants>
+          <speciesReference species="ACP" stoichiometry="1" constant="true"/>
+          <speciesReference species="ADP" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="ACEx" stoichiometry="1" constant="true"/>
+          <speciesReference species="ATP" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vACS" reversible="true">
+        <listOfReactants>
+          <speciesReference species="ACEx" stoichiometry="1" constant="true"/>
+          <speciesReference species="ATP" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="ACCOA" stoichiometry="1" constant="true"/>
+          <speciesReference species="AMP" stoichiometry="1" constant="true"/>
+          <speciesReference species="P" stoichiometry="2" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vPTA" reversible="true">
+        <listOfReactants>
+          <speciesReference species="ACCOA" stoichiometry="1" constant="true"/>
+          <speciesReference species="P" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="ACP" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vPTS_0" reversible="true">
+        <listOfReactants>
+          <speciesReference species="ei" stoichiometry="1" constant="true"/>
+          <speciesReference species="PEP" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="eiP" stoichiometry="1" constant="true"/>
+          <speciesReference species="PYR" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vPTS_1" reversible="true">
+        <listOfReactants>
+          <speciesReference species="hpr" stoichiometry="1" constant="true"/>
+          <speciesReference species="eiP" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="hprP" stoichiometry="1" constant="true"/>
+          <speciesReference species="ei" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vPTS_2" reversible="true">
+        <listOfReactants>
+          <speciesReference species="eiia" stoichiometry="1" constant="true"/>
+          <speciesReference species="hprP" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="eiiaP" stoichiometry="1" constant="true"/>
+          <speciesReference species="hpr" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vPTS_3" reversible="true">
+        <listOfReactants>
+          <speciesReference species="eiicb" stoichiometry="1" constant="true"/>
+          <speciesReference species="eiiaP" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="eiicbP" stoichiometry="1" constant="true"/>
+          <speciesReference species="eiia" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vPTS_4" reversible="true">
+        <listOfReactants>
+          <speciesReference species="GLCp" stoichiometry="1" constant="true"/>
+          <speciesReference species="eiicbP" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="G6P" stoichiometry="1" constant="true"/>
+          <speciesReference species="eiicb" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vGLC_feed" reversible="true">
+        <listOfProducts>
+          <speciesReference species="GLCx" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vCYTBO" reversible="true">
+        <listOfReactants>
+          <speciesReference species="QH2" stoichiometry="2" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="Q" stoichiometry="2" constant="true"/>
+          <speciesReference species="Hout" stoichiometry="8" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vSQR" reversible="true">
+        <listOfReactants>
+          <speciesReference species="FADH2" stoichiometry="1" constant="true"/>
+          <speciesReference species="Q" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="FAD" stoichiometry="1" constant="true"/>
+          <speciesReference species="QH2" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vNDHII" reversible="true">
+        <listOfReactants>
+          <speciesReference species="NADH" stoichiometry="1" constant="true"/>
+          <speciesReference species="Q" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="NAD" stoichiometry="1" constant="true"/>
+          <speciesReference species="QH2" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vGROWTH" reversible="true">
+        <listOfReactants>
+          <speciesReference species="G6P" stoichiometry="116" constant="true"/>
+          <speciesReference species="E4P" stoichiometry="204" constant="true"/>
+          <speciesReference species="PGA3" stoichiometry="845" constant="true"/>
+          <speciesReference species="OAA" stoichiometry="1010" constant="true"/>
+          <speciesReference species="AKG" stoichiometry="610" constant="true"/>
+          <speciesReference species="PYR" stoichiometry="1601" constant="true"/>
+          <speciesReference species="R5P" stoichiometry="507" constant="true"/>
+          <speciesReference species="PEP" stoichiometry="293" constant="true"/>
+          <speciesReference species="GAP" stoichiometry="73" constant="true"/>
+          <speciesReference species="F6P" stoichiometry="40" constant="true"/>
+          <speciesReference species="NADPH" stoichiometry="10169" constant="true"/>
+          <speciesReference species="ACCOA" stoichiometry="2118" constant="true"/>
+          <speciesReference species="NAD" stoichiometry="2004" constant="true"/>
+          <speciesReference species="ATP" stoichiometry="30508" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="NADP" stoichiometry="10169" constant="true"/>
+          <speciesReference species="NADH" stoichiometry="2004" constant="true"/>
+          <speciesReference species="ADP" stoichiometry="30508" constant="true"/>
+          <speciesReference species="P" stoichiometry="30508" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vATP_MAINTENANCE" reversible="true">
+        <listOfReactants>
+          <speciesReference species="ATP" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="ADP" stoichiometry="1" constant="true"/>
+          <speciesReference species="P" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vXCH_GLC" reversible="true">
+        <listOfReactants>
+          <speciesReference species="GLCx" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="GLCp" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vPIT" reversible="true">
+        <listOfReactants>
+          <speciesReference species="Pp" stoichiometry="1" constant="true"/>
+          <speciesReference species="Hout" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="P" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vXCH_P" reversible="true">
+        <listOfProducts>
+          <speciesReference species="Pp" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vXCH_ACE1" reversible="true">
+        <listOfReactants>
+          <speciesReference species="ACEx" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="ACEp" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="v_ACE_OUT" reversible="true">
+        <listOfReactants>
+          <speciesReference species="ACEx_0" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vXCH_ACE2" reversible="true">
+        <listOfReactants>
+          <speciesReference species="ACEp" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="ACEx_0" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="vGL6P_HYDROLYSIS" reversible="true">
+        <listOfReactants>
+          <speciesReference species="GL6P" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="PGN" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 1 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+    </listOfReactions>
+  </model>
+</sbml>
