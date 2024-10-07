@@ -8,9 +8,9 @@ species O in cytosol, $P in extracellular, $Q in extracellular;
 species R in cytosol;
 
 // Reactions:
-v1: $A -> B; e_v2*(Vm2 / Km2 *(A-B/Keq2)) / (1 + A/Km2 + B/Km3)
-v2: B -> R; e_v3*(Vm3 / Km4 *(B-R/Keq3)) / (1 + B/Km4 + R/Km5)
-v3: R -> ; e_v13*(Vm13 / Km22 *(R/Keq13)) / (1 + R/Km22)
+v1: $A -> B; e_v1*(Vm2 / Km2 *(A-B/Keq2)) / (1 + A/Km2 + B/Km3)
+v2: B -> R; e_v2*(Vm3 / Km4 *(B-R/Keq3)) / (1 + B/Km4 + R/Km5)
+v3: R -> ; e_v3*(Vm13 / Km22 *(R/Keq13)) / (1 + R/Km22)
 v4: B -> C; e_v4*(Vm4 / Km6 *(B-C/Keq4)) / (1 + B/Km6 + C/Km7)
 v5: C -> D; e_v5*(Vm5 / Km7 *(C-D/Keq5)) / (1 + C/Km7 + D/Km8)
 v6: D -> E; e_v6*(Vm6 / Km9 *(D-E/Keq6)) / (1 + D/Km9 + E/Km10)
@@ -20,13 +20,13 @@ v9: D -> G; e_v9*(Vm9 / Km14 *(D-G/Keq9)) / (1 + D/Km14 + G/Km15)
 v10: G -> H; e_v10*(Vm10 / Km16 *(G-H/Keq10)) / (1 + G/Km16 + H/Km17)
 v11: H -> I; e_v11*(Vm11 / Km18 *(H-I/Keq11)) / (1 + H/Km18 + I/Km19)
 v12: I -> $J; e_v12*(Vm12 / Km20 *(I-J/Keq12)) / (1 + I/Km20 + J/Km21)
-v13: F -> ; e_v14*(Vm14 / Km23 *(F/Keq14)) / (1 + F/Km23)
-v14: F -> L; e_v15*(Vm15 / Km24 *(F-L/Keq15)) / (1 + F/Km24 + L/Km25)
-v15: L -> M; e_v16*(Vm16 / Km26 *(L-M/Keq16)) / (1 + L/Km26 + M/Km27)
-v16: M -> N; e_v17*(Vm17 / Km28 *(M-N/Keq17)) / (1 + M/Km28 + N/Km29)
-v17: N -> O; e_v18*(Vm18 / Km30 *(N-O/Keq18)) / (1 + N/Km30 + O/Km31)
-v18: O -> $P; e_v19*(Vm19 / Km31 *(O-P/Keq19)) / (1 + O/Km31 + P/Km32)
-v19: O -> $Q; e_v21*(Vm21 / Km34 *(O-Q/Keq21)) / (1 + O/Km34 + Q/Km35)
+v13: F -> ; e_v13*(Vm14 / Km23 *(F/Keq14)) / (1 + F/Km23)
+v14: F -> L; e_v14*(Vm15 / Km24 *(F-L/Keq15)) / (1 + F/Km24 + L/Km25)
+v15: L -> M; e_v15*(Vm16 / Km26 *(L-M/Keq16)) / (1 + L/Km26 + M/Km27)
+v16: M -> N; e_v16*(Vm17 / Km28 *(M-N/Keq17)) / (1 + M/Km28 + N/Km29)
+v17: N -> O; e_v17*(Vm18 / Km30 *(N-O/Keq18)) / (1 + N/Km30 + O/Km31)
+v18: O -> $P; e_v18*(Vm19 / Km31 *(O-P/Keq19)) / (1 + O/Km31 + P/Km32)
+v19: O -> $Q; e_v19*(Vm21 / Km34 *(O-Q/Keq21)) / (1 + O/Km34 + Q/Km35)
 
 
 // Variable initializations:
@@ -49,9 +49,7 @@ e_v16 = 1;
 e_v17 = 1;
 e_v18 = 1;
 e_v19 = 1;
-e_v20 = 1;
-e_v21 = 1;
-e_v22 = 1;
+
 
 Vm1 = 1.448;
 Vm2 = 4.881;
