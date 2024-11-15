@@ -18,6 +18,7 @@ logging.getLogger("cobra").setLevel(logging.ERROR)
 
 import pandas as pd
 
+import emll
 from emll.pytensor_utils import LeastSquaresSolve
 
 import pytensor.tensor as pt
@@ -782,4 +783,26 @@ def plt_spr_scatter(dataframe, title):
     plt.set_ylabel('Spearman rank coefficient, $\it{r}$', size=14)
     plt.tick_params(axis='both', which='major', labelsize=13)
     plt.set_title(title, size=20)
+
+
+def calculate_FCC_med_rankings(postFCC, reaction):
+    postFCC_med=pd.DataFrame(np.median(postFCC, axis=0), columns=r.getReactionIds(), index=r.getReactionIds()).abs()
+    m1 = postFCC_med.index.values[:, None] == postFCC_med.columns.values
+    postFCC = pd.DataFrame(np.select([m1], [float('Nan')], postFCC_med), columns=postFCC_med.columns, index=postFCC_med.index)
+    postFCC_rankings= postFCC.rank(axis=1, ascending=False, na_option='keep')
     
+    return postFCC_rankings.loc[reaction]
+
+
+def run_prior_predictive(BMCA_obj):
+    ll = emll.LinLogLeastNorm(BMCA_obj.N, BMCA_obj.Ex.to_numpy(), BMCA_obj.Ey.to_numpy(), BMCA_obj.v_star, driver='gelsy')
+    
+    with pm.Model() as pymc_model:
+        # Initialize elasticities
+        # Ex and Ey have to be shape (rxns, mets)
+        Ex_t = pm.Deterministic('Ex', emll.util.initialize_elasticity(BMCA_obj.Ex.to_numpy().T, 'Ex', b=0.05, sd=1, alpha=5))
+        Ey_t = pm.Deterministic('Ey', emll.util.initialize_elasticity(BMCA_obj.Ey.to_numpy().T, 'Ey', b=0.05, sd=1, alpha=5))
+
+        trace_prior = pm.sample_prior_predictive()
+
+    return trace_prior 

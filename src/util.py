@@ -18,6 +18,7 @@ logging.getLogger("cobra").setLevel(logging.ERROR)
 
 import pandas as pd
 
+import emll
 from emll.aesara_utils import LeastSquaresSolve
 
 import aesara.tensor as pt
@@ -27,6 +28,7 @@ import pymc as pm
 import matplotlib.pyplot as plt
 import seaborn as sns
 import arviz as az
+
 
 def generate_data(model_file, perturbation_levels, data_folder, concurrent=1):
     """
@@ -50,7 +52,7 @@ def generate_data(model_file, perturbation_levels, data_folder, concurrent=1):
         
         pertLevel = pl #/100 
         perturbation_level = [pertLevel]# [1 - pertLevel, 1 + pertLevel]
-        # get ride of 0 values
+        # get rid of 0 values
         # here
 
         header = e_list + exMet + inMet + fluxIDs        
@@ -321,9 +323,6 @@ def estimate_CCs(BMCA_obj, Ex):
     bs = at.as_tensor_variable(bs)
 
     def solve_aesara(A, b):
-        os.chdir('..')
-        from emll.aesara_utils import LeastSquaresSolve
-        os.chdir('src')
         rsolve_op = LeastSquaresSolve()
         return rsolve_op(A, b).squeeze()
 
@@ -335,7 +334,45 @@ def estimate_CCs(BMCA_obj, Ex):
     
     FCC = (Ex_ss @ CCC.eval()) + identity
     
-    return CCC.eval(), FCC
+    # return CCC.eval(), FCC
+    return FCC
+
+
+def estimate_rep_CCs(BMCA_obj, Ex, n_samp, a):
+    """
+    for omitExMet
+    a=np.diag(BMCA_obj.en.values / BMCA_obj.vn.values)
+
+    for omitFluxes
+    a=np.diag(BMCA_obj.en.values / med_vt_advi)
+    """
+
+    a = np.diag(a)
+    a = a[np.newaxis,:].repeat(n_samp * 1000, axis=0)
+
+    Ex_ss = a @ Ex
+    As = BMCA_obj.N @ np.diag(BMCA_obj.v_star) @ Ex_ss
+    bs = BMCA_obj.N @ np.diag(BMCA_obj.v_star)
+    bs = bs[np.newaxis, :].repeat(n_samp * 1000, axis=0)
+    
+    As = at.as_tensor_variable(As)
+    bs = at.as_tensor_variable(bs)
+
+    def solve_aesara(A, b):
+        rsolve_op = LeastSquaresSolve()
+        return rsolve_op(A, b).squeeze()
+
+    CCC, _ = aesara.scan(lambda A, b: solve_aesara(A, b),
+                        sequences=[As, bs], strict=True)
+
+    identity = np.eye(len(BMCA_obj.N.T))
+    identity = identity[np.newaxis,:].repeat(n_samp * 1000, axis=0)
+    
+    FCC = (Ex_ss @ CCC.eval()) + identity
+    
+    # return CCC.eval(), FCC
+    return FCC
+
 
 def calculate_e_hat(BMCA_obj, v_hat_obs, x_terms, y_terms): 
     one_n = np.ones([len(x_terms.eval()),len(BMCA_obj.en)])
@@ -582,34 +619,6 @@ def runBayesInf_external(BMCA_obj, r, data, output_dir, n_iter, n_samp=1):
     return sample_draw(approx, n_samp)
 
 
-def estimate_CCs(BMCA_obj, Ex, n_samp, a):
-    a = np.diag(a)
-    a = a[np.newaxis,:].repeat(n_samp * 1000, axis=0)
-
-    Ex_ss = a @ Ex
-    As = BMCA_obj.N @ np.diag(BMCA_obj.v_star) @ Ex_ss
-    bs = BMCA_obj.N @ np.diag(BMCA_obj.v_star)
-    bs = bs[np.newaxis, :].repeat(n_samp * 1000, axis=0)
-    
-    As = at.as_tensor_variable(As)
-    bs = at.as_tensor_variable(bs)
-
-    def solve_aesara(A, b):
-        rsolve_op = LeastSquaresSolve()
-        return rsolve_op(A, b).squeeze()
-
-    CCC, _ = aesara.scan(lambda A, b: solve_aesara(A, b),
-                        sequences=[As, bs], strict=True)
-
-    identity = np.eye(len(BMCA_obj.N.T))
-    identity = identity[np.newaxis,:].repeat(n_samp * 1000, axis=0)
-    
-    FCC = (Ex_ss @ CCC.eval()) + identity
-    
-    # return CCC.eval(), FCC
-    return FCC
-
-
 def append_FCC_df(postFCC, label, r):
     dfs=[]
     
@@ -782,4 +791,27 @@ def plt_spr_scatter(dataframe, title):
     plt.set_ylabel('Spearman rank coefficient, $\it{r}$', size=14)
     plt.tick_params(axis='both', which='major', labelsize=13)
     plt.set_title(title, size=20)
+
+
+def calculate_FCC_med_rankings(postFCC, reaction, r):
+    postFCC_med=pd.DataFrame(np.median(postFCC, axis=0), columns=r.getReactionIds(), index=r.getReactionIds()).abs()
+    m1 = postFCC_med.index.values[:, None] == postFCC_med.columns.values
+    postFCC = pd.DataFrame(np.select([m1], [float('Nan')], postFCC_med), columns=postFCC_med.columns, index=postFCC_med.index)
+    postFCC_rankings= postFCC.rank(axis=1, ascending=False, na_option='keep')
     
+    return postFCC_rankings.loc[reaction]
+    
+
+def run_prior_predictive(BMCA_obj):
+    ll = emll.LinLogLeastNorm(BMCA_obj.N, BMCA_obj.Ex.to_numpy(), BMCA_obj.Ey.to_numpy(), BMCA_obj.v_star, driver='gelsy')
+    
+    with pm.Model() as pymc_model:
+        # Initialize elasticities
+        # Ex and Ey have to be shape (rxns, mets)
+        Ex_t = pm.Deterministic('Ex', emll.util.initialize_elasticity(BMCA_obj.Ex.to_numpy().T, 'Ex'))
+        Ey_t = pm.Deterministic('Ey', emll.util.initialize_elasticity(BMCA_obj.Ey.to_numpy().T, 'Ey'))
+
+        trace_prior = pm.sample_prior_predictive()
+
+    return trace_prior
+

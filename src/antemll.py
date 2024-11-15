@@ -31,13 +31,7 @@ class antemll():
 
         self.N, self.v_star, self.en, self.xn, self.yn, self.vn, self.x_star = \
             antemll.load_model_data(model_file, data_file, ref_ind, filler_v_star)
-        """
-        s = te.loada("models/MODEL1303260011_cobra.ant")
-        with open("temp.txt", "w") as f:
-            f.write(s.getSBML())
-        model = cobra.io.read_sbml_model("temp.txt")
-        os.remove("temp.txt") """
-        
+                
         self.n_exp = self.en.shape[0]
 
         self.Ex = antemll.create_Visser_elasticity_matrix(model_file, cobra_sbml)
