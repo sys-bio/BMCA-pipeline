@@ -23,9 +23,9 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
-     inkscape:zoom="1.0182338"
-     inkscape:cx="433.59395"
-     inkscape:cy="458.14627"
+     inkscape:zoom="0.72000003"
+     inkscape:cx="231.94444"
+     inkscape:cy="409.02776"
      inkscape:window-width="1920"
      inkscape:window-height="1009"
      inkscape:window-x="-8"
@@ -35,6 +35,25 @@
      showgrid="false" />
   <defs
      id="defs1">
+    <marker
+       style="overflow:visible"
+       id="marker4"
+       refX="5"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Concave triangle arrow"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.7)"
+         d="M -2,-4 9,0 -2,4 c 2,-2.33 2,-5.66 0,-8 z"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:none"
+         id="path4" />
+    </marker>
     <marker
        style="overflow:visible"
        id="DartArrow"
@@ -52,7 +71,8 @@
          style="fill:context-stroke;fill-rule:evenodd;stroke:none"
          d="M 0,0 5,-5 -12.5,0 5,5 Z"
          transform="scale(-0.5)"
-         id="path6" />
+         id="path6"
+         marker-end="url(#ConcaveTriangle)" />
     </marker>
     <marker
        style="overflow:visible"
@@ -71,7 +91,21 @@
          transform="scale(0.7)"
          d="M -2,-4 9,0 -2,4 c 2,-2.33 2,-5.66 0,-8 z"
          style="fill:context-stroke;fill-rule:evenodd;stroke:none"
-         id="path7" />
+         id="path7"
+         marker-end="url(#ConcaveTriangle)" />
+    </marker>
+    <marker
+       id="marker1"
+       viewBox="0 0 10 10"
+       refX="5"
+       refY="0"
+       markerWidth="1"
+       markerHeight="1"
+       orient="auto">
+      <path
+         d="M 0 0 L 10 5 L 0 10 z"
+         fill="black"
+         id="path1" />
     </marker>
   </defs>
   <g
@@ -164,12 +198,14 @@
       <path
          id="rect8"
          style="fill:none;stroke:#000000"
-         d="m 139.75,144 h 20.5 c 1.108,0 2,0.892 2,2 v 8 c 0,1.108 -0.892,2 -2,2 h -20.5 c -1.108,0 -2,-0.892 -2,-2 v -8 c 0,-1.108 0.892,-2 2,-2 z" />
+         d="m 139.75,144 h 20.5 c 1.108,0 2,0.892 2,2 v 8 c 0,1.108 -0.892,2 -2,2 h -20.5 c -1.108,0 -2,-0.892 -2,-2 v -8 c 0,-1.108 0.892,-2 2,-2 z"
+         marker-end="url(#ConcaveTriangle)" />
       <path
          d="m 141.34033,153 v -7.1582 h 5.17578 v 0.84472 h -4.22851 v 2.19239 h 3.95996 v 0.83984 h -3.95996 v 2.43652 h 4.39453 V 153 Z m 9.11133,0 v -1.71387 h -3.10547 v -0.80566 l 3.2666,-4.63867 h 0.71778 v 4.63867 h 0.96679 v 0.80566 h -0.96679 V 153 Z m 0,-2.51953 v -3.22754 l -2.24121,3.22754 z M 153.55225,153 v -7.1582 h 2.70019 q 0.71289,0 1.08887,0.0684 0.52734,0.0879 0.88379,0.33691 0.35644,0.24414 0.57129,0.68848 0.21972,0.44433 0.21972,0.97656 0,0.91309 -0.58105,1.54785 -0.58106,0.62988 -2.09961,0.62988 h -1.83594 V 153 Z m 0.94726,-3.75488 h 1.85059 q 0.91797,0 1.30371,-0.3418 0.38574,-0.3418 0.38574,-0.96191 0,-0.44922 -0.22949,-0.76661 -0.22461,-0.32226 -0.5957,-0.4248 -0.23926,-0.0635 -0.88379,-0.0635 h -1.83106 z"
          id="text8"
          style="font-size:10px;font-family:Arial;text-anchor:middle"
-         aria-label="E4P" />
+         aria-label="E4P"
+         marker-end="url(#ConcaveTriangle)" />
     </g>
     <g
        id="g9"
@@ -778,7 +814,7 @@
        id="text52">vGDH</text>
     <ellipse
        style="display:none;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.725217;stroke-linecap:butt;stroke-linejoin:miter"
-       id="path1"
+       id="ellipse1"
        cx="345.08438"
        cy="509.28348"
        rx="96.015343"
@@ -1049,69 +1085,85 @@
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.41732;stroke-opacity:1"
        d="M 45.168814,141.59504 45.122024,91.351462"
        id="path111"
-       sodipodi:nodetypes="cc" />
+       sodipodi:nodetypes="cc"
+       marker-end="url(#ConcaveTriangle)" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.41732;stroke-opacity:1"
        d="m 60.62202,85.351462 c 34.578052,0 34.578052,0 34.578052,0"
-       id="path112" />
+       id="path112"
+       marker-end="url(#ConcaveTriangle)" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.41732;stroke-opacity:1"
        d="m 126.20007,85.351462 h 42.2204"
-       id="path113" />
+       id="path113"
+       marker-end="url(#ConcaveTriangle)" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.41732;stroke-opacity:1"
        d="M 180.67047,91.351462 V 129.72176"
-       id="path114" />
+       id="path114"
+       marker-end="url(#ConcaveTriangle)" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.41732;stroke-opacity:1"
        d="m 180.67047,141.72176 v 29.66667"
-       id="path115" />
+       id="path115"
+       marker-end="url(#ConcaveTriangle)" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.41732;stroke-opacity:1"
        d="m 180.67047,183.38843 v 46.33333"
-       id="path116" />
+       id="path116"
+       marker-end="url(#ConcaveTriangle)" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.41732;stroke-opacity:1"
        d="M 180.67047,241.72176 V 272.4301"
-       id="path117" />
+       id="path117"
+       marker-end="url(#ConcaveTriangle)" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.41732;stroke-opacity:1"
        d="m 180.67047,284.4301 v 31.75"
-       id="path118" />
+       id="path118"
+       marker-end="url(#ConcaveTriangle)" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.41732;stroke-opacity:1"
        d="m 180.67047,328.1801 v 29.66666"
-       id="path119" />
+       id="path119"
+       marker-end="url(#ConcaveTriangle)" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.41732;stroke-opacity:1"
        d="m 180.67047,369.84676 v 29.66667"
-       id="path120" />
+       id="path120"
+       marker-end="url(#ConcaveTriangle)" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.41732;stroke-opacity:1"
        d="M 180.67047,411.51343 V 438.0551"
-       id="path121" />
+       id="path121"
+       marker-end="url(#ConcaveTriangle)" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.41732;stroke-opacity:1"
        d="m 180.67047,450.05509 v 38"
-       id="path122" />
+       id="path122"
+       marker-end="url(#ConcaveTriangle)" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.41732;stroke-opacity:1"
        d="M 180.67047,488.05509 Z"
-       id="path123" />
+       id="path123"
+       marker-end="url(#ConcaveTriangle)" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.41732;stroke-opacity:1"
        d="m 161.92047,494.05509 h -39.1288 v 0"
-       id="path124" />
+       id="path124"
+       marker-end="url(#ConcaveTriangle)" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.41732;stroke-opacity:1"
        d="M 98.29167,494.05509 H 66.541667"
        id="path125"
-       sodipodi:nodetypes="cc" />
+       sodipodi:nodetypes="cc"
+       marker-end="url(#ConcaveTriangle)" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.41732;stroke-opacity:1"
        d="m 51.041667,500.05509 3e-6,17.13912"
        id="path126"
-       sodipodi:nodetypes="cc" />
+       sodipodi:nodetypes="cc"
+       marker-end="url(#ConcaveTriangle)" />
     <g
        id="g2"
        transform="translate(110.50948,510.16675)">
@@ -1440,44 +1492,48 @@
        id="text84">vACEB</text>
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.41732;stroke-opacity:1"
-       d="m 51.04167,529.19421 v 23.13912 0"
-       id="path128" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.41732;stroke-opacity:1"
        d="m 125.31826,235.72176 h 43.10221"
-       id="path129" />
+       id="path129"
+       marker-end="url(#ConcaveTriangle)" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.41732;stroke-opacity:1"
        d="m 168.42047,177.38843 c -58.71711,0 -55.35221,-2.93108 -55.35221,52.33333"
        id="path130"
-       sodipodi:nodetypes="cc" />
+       sodipodi:nodetypes="cc"
+       marker-end="url(#ConcaveTriangle)" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.41732;stroke-opacity:1;marker-end:url(#DartArrow)"
        d="m 192.92047,85.351462 h 60.93972"
-       id="path131" />
+       id="path131"
+       marker-end="url(#ConcaveTriangle)" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.41732;stroke-opacity:1"
        d="m 284.86019,85.351462 29.25,-2e-6"
        id="path132"
-       sodipodi:nodetypes="cc" />
+       sodipodi:nodetypes="cc"
+       marker-end="url(#ConcaveTriangle)" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.41732;stroke-opacity:1"
        d="m 326.36019,129.84717 v 25.42896"
-       id="path133" />
+       id="path133"
+       marker-end="url(#ConcaveTriangle)" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.41732;stroke-opacity:1"
        d="m 326.36019,167.27613 0,29.71659"
        id="path134"
-       sodipodi:nodetypes="cc" />
+       sodipodi:nodetypes="cc"
+       marker-end="url(#ConcaveTriangle)" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.41732;stroke-opacity:1"
        d="M 326.36019,91.351462 V 117.84717"
-       id="path135" />
+       id="path135"
+       marker-end="url(#ConcaveTriangle)" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.41732;stroke-opacity:1"
        d="m 341.86019,123.84717 c 73.33722,0 69.91775,-4.40876 69.91775,50.19514"
        id="path136"
-       sodipodi:nodetypes="cc" />
+       sodipodi:nodetypes="cc"
+       marker-end="url(#ConcaveTriangle)" />
     <a
        id="a137"
        transform="translate(0,-21)">
@@ -1485,93 +1541,116 @@
          style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.41732;stroke-opacity:1"
          d="M 314.11019,223.99272 H 266.78088"
          id="path137"
-         sodipodi:nodetypes="cc" />
+         sodipodi:nodetypes="cc"
+         marker-end="url(#ConcaveTriangle)" />
     </a>
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.41732;stroke-opacity:1"
        d="M 338.61019,85.351462 C 488.33891,84.310792 494.01332,94.636719 493.45833,147.125"
        id="path138"
-       sodipodi:nodetypes="cc" />
+       sodipodi:nodetypes="cc"
+       marker-end="url(#ConcaveTriangle)" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.41732;stroke-opacity:1"
        d="m 493.45833,159.125 v 91.95093"
        id="path139"
-       sodipodi:nodetypes="cc" />
+       sodipodi:nodetypes="cc"
+       marker-end="url(#ConcaveTriangle)" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.41732;stroke-opacity:1"
        d="m 411.77794,186.04231 c 0.17418,51.93711 1.95283,49.67945 -218.85747,49.67945"
        id="path140"
-       sodipodi:nodetypes="cc" />
+       sodipodi:nodetypes="cc"
+       marker-end="url(#ConcaveTriangle)" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.41732;stroke-opacity:1"
        d="m 192.8284,238.59134 c 300.62993,0.3684 300.62993,-1.19812 300.62993,-13.9743"
        id="path141"
-       sodipodi:nodetypes="cc" />
+       sodipodi:nodetypes="cc"
+       marker-end="url(#ConcaveTriangle)" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.41732;stroke-opacity:1;marker-end:url(#ConcaveTriangle);stroke-linejoin:miter;stroke-linecap:butt"
        d="m 242.28088,202.99272 c -49.93816,0.23911 0.0562,-67.03978 -49.36041,-67.27096"
        id="path142"
-       sodipodi:nodetypes="cc" />
+       sodipodi:nodetypes="cc"
+       marker-end="url(#ConcaveTriangle)" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.41732;stroke-opacity:1"
        d="m 248.63743,488.05509 c 8.6417,-25.78676 10.58039,-29.63083 21.15123,-46.27568"
        id="path143"
-       sodipodi:nodetypes="cc" />
+       sodipodi:nodetypes="cc"
+       marker-end="url(#ConcaveTriangle)" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.41732;stroke-opacity:1"
        d="m 282.03866,429.77941 c 16.68753,-10.7336 33.61714,-16.50468 50.79571,-17.17187"
        id="path144"
-       sodipodi:nodetypes="cc" />
+       sodipodi:nodetypes="cc"
+       marker-end="url(#ConcaveTriangle)" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.41732;stroke-opacity:1"
        d="m 357.33437,412.60754 c 12.56484,0.83815 23.45652,-0.37578 50.9404,16.77433"
        id="path145"
-       sodipodi:nodetypes="cc" />
+       sodipodi:nodetypes="cc"
+       marker-end="url(#ConcaveTriangle)" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.41732;stroke-opacity:1"
        d="m 420.52477,441.38187 c 9.92902,13.58269 18.40921,28.09678 21.51761,46.06415"
        id="path146"
-       sodipodi:nodetypes="cc" />
+       sodipodi:nodetypes="cc"
+       marker-end="url(#ConcaveTriangle)" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.41732;stroke-opacity:1"
        d="m 442.04238,499.44602 c 0.81464,29.97544 -5.62475,41.29765 -11.45543,54.18513"
        id="path147"
-       sodipodi:nodetypes="cc" />
+       sodipodi:nodetypes="cc"
+       marker-end="url(#ConcaveTriangle)" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.41732;stroke-opacity:1"
        d="m 423.77368,565.90735 c -9.91676,16.36523 -21.15514,23.21478 -32.25508,31.06113"
        id="path148"
-       sodipodi:nodetypes="cc" />
+       sodipodi:nodetypes="cc"
+       marker-end="url(#ConcaveTriangle)" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.41732;stroke-opacity:1"
        d="m 367.0186,602.96848 c -13.38045,3.32183 -26.52939,3.51833 -39.41883,0.21152"
        id="path149"
-       sodipodi:nodetypes="cc" />
+       sodipodi:nodetypes="cc"
+       marker-end="url(#ConcaveTriangle)" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.41732;stroke-opacity:1"
        d="m 296.59976,597.18 c -9.46829,-5.11253 -23.41651,-17.49803 -28.99627,-30.64497"
        id="path150"
-       sodipodi:nodetypes="cc" />
+       sodipodi:nodetypes="cc"
+       marker-end="url(#ConcaveTriangle)" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.41732;stroke-opacity:1"
        d="m 260.50948,554.16675 c -7.61359,-13.46692 -12.10755,-30.83337 -11.87205,-54.11166"
        id="path151"
-       sodipodi:nodetypes="cc" />
+       sodipodi:nodetypes="cc"
+       marker-end="url(#ConcaveTriangle)" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.41732;stroke-opacity:1"
        d="M 312.09976,597.18 330.2839,502.4115"
-       id="path152" />
+       id="path152"
+       marker-end="url(#ConcaveTriangle)" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.41732;stroke-opacity:1"
        d="m 330.2839,490.4115 14.80047,-71.80396"
-       id="path153" />
+       id="path153"
+       marker-end="url(#ConcaveTriangle)" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.41732;stroke-opacity:1"
        d="m 199.42047,494.05509 h 36.96695"
-       id="path154" />
+       id="path154"
+       marker-end="url(#ConcaveTriangle)" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.41732;stroke-linecap:butt;stroke-linejoin:miter"
        d="m 51.04167,564.33333 v 44"
-       id="path2" />
+       id="path2"
+       marker-end="url(#ConcaveTriangle)" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.41732;marker-end:url(#marker4)"
+       d="m 51.04167,529.19421 v 23.13912"
+       id="path3" />
   </g>
 </svg>
