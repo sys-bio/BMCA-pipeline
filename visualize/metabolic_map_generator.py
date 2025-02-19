@@ -37,31 +37,20 @@ class MetabolicMap(inkex.EffectExtension):
         
         # Elements
         metabolites = {
-            "G6P": (100, 100), "F6P": (200, 100), "FDP": (300, 100), "GAP": (400, 100), "PYR": (500, 100),
-            "ATP": (100, 200), "ADP": (200, 200), "NADH": (300, 200), "NAD": (400, 200), "OAA": (500, 200),
-            "PEP": (600, 200), "NADP": (700, 200), "NADPH": (800, 200), "P": (100, 300), "BPG": (200, 300),
-            "FAD": (300, 300), "FADH2": (400, 300), "AMP": (500, 300), "CAMP": (600, 300), "DAP": (700, 300),
-            "PGA3": (800, 300), "PGA2": (100, 400), "GL6P": (200, 400), "PGN": (300, 400), "RU5P": (400, 400),
-            "X5P": (500, 400), "R5P": (600, 400), "E4P": (700, 400), "S7P": (800, 400), "MAL": (100, 500),
-            "Q": (200, 500), "QH2": (300, 500), "ICIT": (400, 500), "AKG": (500, 500), "SUCCOA": (600, 500),
-            "SUC": (700, 500), "FUM": (800, 500), "GLX": (100, 600), "ACCOA": (200, 600), "ACEx": (300, 600),
-            "ACP": (400, 600)
+            "A": (100, 100), "B": (200, 100), "C": (300, 100), "D": (400, 100), "E": (500, 100),
+            "F": (100, 200), "G": (200, 200), "H": (300, 200), "I": (400, 200), "J": (500, 200),
+            "L": (100, 300), "M": (200, 300), "N": (300, 300), "O": (400, 300), "P": (500, 300),
+            "Q": (200, 400), "R": (300, 400)
         }
 
-        reactions = [
-            ("vPGI", "G6P", "F6P"), ("vPFK", "ATP", "F6P"), ("vFBA", "FDP", "GAP"),
-            ("vTPI", "DAP", "GAP"), ("vGDH", "GAP", "NADH"), ("vPGK", "ADP", "BPG"),
-            ("vGPM", "PGA3", "PGA2"), ("vENO", "PGA2", "PEP"), ("vPYK", "ADP", "PEP"),
-            ("vZWF", "G6P", "NADP"), ("vPGL", "GL6P", "PGN"), ("vGND", "NADP", "PGN"),
-            ("vRPE", "RU5P", "X5P"), ("vRPI", "RU5P", "R5P"), ("vF6P_GAP_TAL", "GAP", "F6P"),
-            ("vPPC", "PEP", "OAA"), ("vPCK", "ATP", "OAA"), ("vMAD", "MAL", "NADH"),
-            ("vPDH", "NAD", "PYR"), ("vGLT", "ACCOA", "OAA"), ("vICD", "ICIT", "NADP"),
-            ("vLPD", "AKG", "NADH"), ("vSK", "ADP", "SUCCOA"), ("vSDH", "FAD", "SUC"),
-            ("vFUMA", "FUM", "MAL"), ("vMQO", "MAL", "Q"), ("vMDH", "QH2", "OAA"),
-            ("vATP_syn", "ADP", "P"), ("vCYA", "ATP", "CAMP"), ("vDOS", "CAMP", "AMP"),
-            ("vACK", "ACP", "ADP"), ("vACS", "ACEx", "ATP"), ("vPTA", "ACCOA", "P")
-        ]
-        
+        reactions = {
+            "v1": (100, 50), "v2": (200, 50), "v3": (300, 50), "v4": (400, 50), "v5": (500, 50),
+            "v6": (100, 150), "v7": (200, 150), "v8": (300, 150), "v9": (400, 150), "v10": (500, 150),
+            "v11": (100, 250), "v12": (200, 250), "v13": (300, 250), "v14": (400, 250), "v15": (500, 250),
+            "v16": (100, 350), "v17": (200, 350), "v18": (300, 350), "v19": (400, 350)
+        }
+
+
         # 🚀 Ensure all metabolites are drawn
         for metabolite, (x, y) in metabolites.items():
             print(f"DEBUG: Adding metabolite {metabolite} at ({x}, {y})")  # Debugging
@@ -103,26 +92,20 @@ class MetabolicMap(inkex.EffectExtension):
             layer.append(group)
 
         # 🚀 Ensure all reactions are drawn
-        for reaction, src, dst in reactions:
-            if src in metabolites and dst in metabolites:
-                src_x, src_y = metabolites[src]
-                dst_x, dst_y = metabolites[dst]
-                print(f"DEBUG: Drawing reaction {reaction} from {src} to {dst}")  # Debugging
-
-                arrow = etree.Element('path', {
-                    'd': f'M {src_x+4.3},{src_y+2.4} L {dst_x+4.3},{dst_y+2.4}',
-                    'stroke': 'black', 'fill': 'none', 'marker-end': 'url(#Arrow1Lend)'
-                })
-                label = etree.Element('text', {
-                    'x': str((src_x + dst_x) / 2), 'y': str((src_y + dst_y) / 2 - 5),
-                    'font-size': '10', 'font-family': 'Arial', 'font-weight': 'bold',
-                    'fill': 'red', 'text-anchor': 'middle'
-                })
-                label.text = reaction
-                # layer.append(arrow)
-                layer.append(label)
-            else:
-                print(f"WARNING: Reaction {reaction} has missing metabolites: {src}, {dst}")
+        for reaction, (x, y) in reactions.items():
+            # Create text element
+            rxn_label = etree.Element('text', {
+                'x': str(x),
+                'y': str(y + 3),
+                'font-size': '8',
+                'font-family': 'Arial',
+                'text-anchor': 'middle',
+                'fill': 'red',
+                'font-weight': 'bold',
+                'text-anchor': 'middle'
+            })
+            rxn_label.text = reaction
+            layer.append(rxn_label)
 
         # save svg to new file
         output_filename = "output_metabolic_map.svg"
