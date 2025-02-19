@@ -14,7 +14,6 @@ def flip_rects_with_text(input_svg, output_svg):
         rect = group.find(".//svg:rect", namespaces=ns)
         text = group.find(".//svg:text", namespaces=ns)
 
-        # Only consider groups that contain both a <rect> and <text>
         if rect is not None and text is not None:
             # Get the position (x, y) of the rect
             x = float(rect.attrib['x'])
@@ -22,22 +21,19 @@ def flip_rects_with_text(input_svg, output_svg):
             width = float(rect.attrib['width'])
             height = float(rect.attrib['height'])
 
-            # Apply the transform (rotate the rect 90 degrees around the top-left corner)
-            transform = f"rotate(90 {x} {y})"
-            rect.attrib['transform'] = transform
+            # Compute the center of the rectangle
+            center_x = x + width / 2
+            center_y = y + height / 2
 
-            # Rotate the text (apply the same rotation)
-            text.attrib['transform'] = transform
+            # Rotate the rect around its center
+            rect_transform = f"rotate(90 {center_x} {center_y})"
+            rect.attrib['transform'] = rect_transform
 
-            # After rotating, adjust the text position to keep it inside the rotated rectangle
-            new_text_x = x + height  # New x position for text after rotation
-            new_text_y = y - width   # New y position for text after rotation
+            # Rotate the text around its own center
+            text_transform = f"rotate(90 {center_x} {center_y})"
+            text.attrib['transform'] = text_transform
 
-            text.attrib['x'] = str(new_text_x)
-            text.attrib['y'] = str(new_text_y)
-
-            # Debugging output
-            print(f"Rotated rect at ({x}, {y}) by 90 degrees and adjusted text position.")
+            print(f"Rotated rect and text at ({center_x}, {center_y}) by 90 degrees.")
 
     # Save the modified SVG to the output file
     tree.write(output_svg, pretty_print=True, xml_declaration=True, encoding="utf-8")
