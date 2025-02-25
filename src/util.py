@@ -63,9 +63,12 @@ def generate_data(model_file, perturbation_levels, data_folder, concurrent=1):
             writer.writerow(header)
     
             try: # base case    
-                spConc = list(r.simulate(0,1000000)[-1])[1:]
+                r.simulate(0,100)
+                r.steadyState()
+                spConc = list(r.simulate(0,100)[-1])[1:]
+                # spConc = list(r.simulate(0,100000)[-1])[1:]
                 # r.conservedMoietyAnalysis = True
-                # r.steadyState()
+                # 
 
                 enzymes = [r.getValue(e) for e in e_list]
                 exMet_values = [r.getValue(m) for m in exMet]
@@ -85,8 +88,11 @@ def generate_data(model_file, perturbation_levels, data_folder, concurrent=1):
                                 r.resetToOrigin()
                                 r.setValue(params, level*r.getValue(params))
                                 
+                                r.simulate(0,100)
+                                r.steadyState()
                                 spConc = list(r.simulate(0,1000000)[-1])[1:]
-                                # r.steadyState()
+                                #spConc = list(r.simulate(0,100)[-1])[1:]
+                                
                                 enzymes = [r.getValue(e) for e in e_list]
                                 exMet_values = [r.getValue(m) for m in exMet]
                                 fluxes = list(r.getReactionRates())
@@ -307,7 +313,31 @@ def elasticity_to_CCC(BMCA, scaledE=None):
 
     return CxS, CJS
 
-def estimate_CCs(BMCA_obj, Ex):
+def estimate_CCCs(BMCA_obj, Ex):
+    BMCA_obj.vn[BMCA_obj.vn == 0] = 1e-6
+    
+    a = np.diag(BMCA_obj.en.values / BMCA_obj.vn.values)
+    a = np.diag(a)
+    a = a[np.newaxis,:].repeat(1000, axis=0)
+
+    Ex_ss = a @ Ex
+    As = BMCA_obj.N @ np.diag(BMCA_obj.v_star) @ Ex_ss
+    bs = BMCA_obj.N @ np.diag(BMCA_obj.v_star)
+    bs = bs[np.newaxis, :].repeat(1000, axis=0)
+    
+    As = at.as_tensor_variable(As)
+    bs = at.as_tensor_variable(bs)
+
+    def solve_aesara(A, b):
+        rsolve_op = LeastSquaresSolve()
+        return rsolve_op(A, b).squeeze()
+
+    CCC, _ = aesara.scan(lambda A, b: solve_aesara(A, b),
+                        sequences=[As, bs], strict=True)
+
+    return CCC.eval()
+
+def estimate_FCCs(BMCA_obj, Ex):
     BMCA_obj.vn[BMCA_obj.vn == 0] = 1e-6
     
     a = np.diag(BMCA_obj.en.values / BMCA_obj.vn.values)
