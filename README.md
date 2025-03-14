@@ -11,7 +11,7 @@ To set up the environment:
    ```bash
    git clone https://github.com/yourusername/BMCA-pipeline.git
    cd BMCA-pipeline
-3. Create a conda environment and install the dependencies listed in env.yml
+3. Create a conda environment and install the dependencies listed in `env.yml`
 
 ## Usage
 These notebooks can be used to reproduce the figures in the paper. 
