@@ -1,0 +1,259 @@
+
+// Compartments and Species:
+compartment extracellular, cytosol;
+species Ai__ in cytosol, B__ in cytosol, C__ in cytosol, D__ in cytosol;
+species E__ in cytosol, F__ in cytosol, G__ in cytosol, H__ in cytosol;
+species I__ in cytosol, J__ in cytosol, K__ in cytosol;
+species $Ao__ in extracellular, $L__ in cytosol, $Z__ in cytosol; # $N__ in cytosol, 
+
+// Reactions:
+vKIL: Ai__ -> B__; e_vKIL*(Vm1/Km1*(Ai__ - B__/Keq1)/(1 + Ai__/Km1 + B__/Km2))
+vLIM: B__ -> C__; e_vLIM*(Vm2/Km3*(B__ - C__/Keq2)/(1 + B__/Km3 + C__/Km4 + (G__/K_G_Ref)^K_G_Ref_n))
+vMIK: B__ => ; e_vMIK*(k1*B__)
+vNOV: 2 B__ =>; e_vNOV*(k2*B__)
+vOSC: C__ => D__; e_vOSC*(Vm3/Km5*(C__ - D__/Keq3)/(1 + C__/Km5 + D__/Km6 + (J__/K_J_Ref)^K_J_Ref_n))
+vPAP: D__ -> 2 E__; e_vPAP*(Vm4/Km7*(D__ - E__/Keq3)/(1 + D__/Km7 + E__/Km8))
+vQUE: E__ -> F__; e_vQUE*(Vm5/Km9*(E__ - F__/Keq3)/(1 + E__/Km9 + F__/Km10))
+vROM: F__ -> G__; e_vROM*(Vm6/Km11*(F__ - G__/Keq3)/(1 + F__/Km11 + G__/Km12))
+vSIE: G__ -> H__; e_vSIE*(Vm7/Km13*(G__ - H__/Keq3)/(1 + G__/Km13 + H__/Km14)) 
+vTAN: H__ -> I__; e_vTAN*(Vm8/Km15*(H__ - I__/Keq3)/(1 + H__/Km15 + I__/Km16)) 
+vUNI: I__ -> J__; e_vUNI*(Vm9/Km17*(I__ - J__/Keq3)/(1 + I__/Km17 + J__/Km18)) 
+vVIC: J__ => K__;  e_vVIC*(Vm10/Km19*(J__ - K__/Keq3)/(1 + J__/Km19 + K__/Km20)) 
+vWHI: 2 K__ =>; e_vWHI*(k3*K__);
+vALP: $Ao__ -> Ai__; e_vALP*(Vm11/Km21*(Ao__ - Ai__/Keq3)/(1 + Ao__/Km21 + Ai__/Km22))  
+vYAN: K__ -> $L__; e_vYAN*(Vm12/Km23*K__/(1 + K__/Km23))  
+vZUL: E__ => $Z__; e_vZUL*(k4*E__)
+
+e_vKIL=1;
+e_vLIM=1;
+e_vMIK=1;
+e_vNOV=1;
+e_vOSC=1;
+e_vPAP=1;
+e_vQUE=1;
+e_vROM=1;
+e_vSIE=1;
+e_vTAN=1;
+e_vUNI=1;
+e_vVIC=1;
+e_vWHI=1;
+e_vALP=1;
+e_vYAN=1;
+e_vZUL=1;
+
+K_J_Ref = 0.05
+K_J_Ref_n = 4;
+K_G_Ref = 0.05
+K_G_Ref_n = 3
+
+k1 = 0.45; k2 = 2.3; k3 = 1.7; k4 = 0.56
+Vm1 = 5.6; Vm2 = 7.8; Vm3 = 6.7; Vm4 = 4.6
+Vm5 = 6.2; Vm6 = 5.9; Vm7 = 6; Vm8 = 7.1
+Vm9 = 4.6; Vm10 = 4.7; Vm11 = 5.2; Vm12 = 5.3
+Km1 = 0.5; Km2 = 0.5
+Km3 = 0.5; Km4 = 0.5
+Km5 = 0.5; Km6 = 0.5
+Km7 = 0.5; Km8 = 0.5
+Km9 = 0.5; Km10 = 0.5
+Km11 = 0.5; Km12 = 0.5
+Km13 = 0.5; Km14 = 0.5
+Km15 = 0.5; Km16= 0.5
+Km17 = 0.5; Km18= 0.5
+Km19 = 0.5; Km20= 0.5
+Km21 = 0.5; Km22= 0.5
+Km23 = 0.5; 
+Keq1 = 0.01; Keq2 = 4; Keq3 = 4
+
+// Species initializations:
+Ai__ = 0.087;
+B__ = 2.45;
+C__ = 0.62;
+D__ = 5.51;
+E__ = 0.96;
+F__ = 0;
+G__ = 0.9;
+H__ = 0.12;
+I__ = 0.07;
+J__ = 1.85;
+K__ = 0.17;
+Ao__ = 50;
+L__ = 50;
+Z__ = 0.15;
+SUM_P = 4.1;
+F26BP = 0.02;
+
+// Compartment initializations:
+extracellular = 1;
+cytosol = 1;
+
+// Variable initializations:
+KeqAK = 0.45;
+KeqAK has dimensionless;
+gR = 5.12;
+gR has dimensionless;
+KmOSCC__ = 0.1;
+KmOSCC__ has mM;
+KmOSCATP = 0.71;
+KmOSCATP has mM;
+Lzero = 0.66;
+Lzero has dimensionless;
+CiOSCATP = 100;
+CiOSCATP has dimensionless;
+KiOSCATP = 0.65;
+KiOSCATP has mM;
+COSCAMP = 0.0845;
+COSCAMP has dimensionless;
+KOSCAMP = 0.0995;
+KOSCAMP has mM;
+COSCF26BP = 0.0174;
+COSCF26BP has dimensionless;
+KOSCF26BP = 0.000682;
+KOSCF26BP has mM;
+COSCF16BP = 0.397;
+COSCF16BP has dimensionless;
+KOSCF16BP = 0.111;
+KOSCF16BP has mM;
+COSCATP = 3;
+COSCATP has dimensionless;
+KeqTPI = 0.045;
+KeqTPI has dimensionless;
+vKIL_VmKIL = 226.452;
+vKIL_VmKIL has mMpermin;
+vKIL_KmKILAi__ = 0.08;
+vKIL_KmKILAi__ has mM;
+vKIL_KmKILATP = 0.15;
+vKIL_KmKILATP has mM;
+vKIL_KeqKIL = 3800;
+vKIL_KeqKIL has dimensionless;
+vKIL_KmKILB__ = 30;
+vKIL_KmKILB__ has mM;
+vKIL_KmKILADP = 0.23;
+vKIL_KmKILADP has mM;
+vLIM_VmLIM_2 = 339.677;
+vLIM_VmLIM_2 has mMpermin;
+vLIM_KmLIMB___2 = 1.4;
+vLIM_KmLIMB___2 has mM;
+vLIM_KeqLIM_2 = 0.314;
+vLIM_KeqLIM_2 has dimensionless;
+vLIM_KmLIMC___2 = 0.3;
+vLIM_KmLIMC___2 has mM;
+vMIK_KMIKGEN_3 = 6;
+vMIK_KMIKGEN_3 has mMpermin;
+vNOV_KNOVLOSE = 2.4;
+vNOV_KNOVLOSE has mMpermin;
+vOSC_VmOSC = 182.903;
+vOSC_VmOSC has mMpermin;
+vPAP_VmPAP = 322.258;
+vPAP_VmPAP has mMpermin;
+vPAP_KmPAPD__ = 0.3;
+vPAP_KmPAPD__ has mM;
+vPAP_KeqPAP = 0.069;
+vPAP_KeqPAP has dimensionless;
+vPAP_KmPAPGAP = 2;
+vPAP_KmPAPGAP has mM;
+vPAP_KmPAPDHAP = 2.4;
+vPAP_KmPAPDHAP has mM;
+vPAP_KmPAPGAPi = 10;
+vPAP_KmPAPGAPi has mM;
+vQUE_VmQUEf = 1184.52;
+vQUE_VmQUEf has mMpermin;
+vQUE_KmQUEGAP = 0.21;
+vQUE_KmQUEGAP has mM;
+vQUE_KmQUENAD = 0.09;
+vQUE_KmQUENAD has mM;
+vQUE_VmQUEr = 6549.8;
+vQUE_VmQUEr has mMpermin;
+vQUE_KmQUEF__ = 0.0098;
+vQUE_KmQUEF__ has mM;
+vQUE_KmQUENYAN = 0.06;
+vQUE_KmQUENYAN has mM;
+vROM_VmROM = 1306.45;
+vROM_VmROM has mMpermin;
+vROM_KmROMG__ = 0.53;
+vROM_KmROMG__ has mM;
+vROM_KmROMATP = 0.3;
+vROM_KmROMATP has mM;
+vROM_KeqROM = 3200;
+vROM_KeqROM has dimensionless;
+vROM_KmROMF__ = 0.003;
+vROM_KmROMF__ has mM;
+vROM_KmROMADP = 0.2;
+vROM_KmROMADP has mM;
+vSIE_VmSIE = 2525.81;
+vSIE_VmSIE has mMpermin;
+vSIE_KmSIEG__ = 1.2;
+vSIE_KmSIEG__ has mM;
+vSIE_KeqSIE = 0.19;
+vSIE_KeqSIE has dimensionless;
+vSIE_KmSIEH__ = 0.08;
+vSIE_KmSIEH__ has mM;
+vTAN_VmTAN = 365.806;
+vTAN_VmTAN has mMpermin;
+vTAN_KmTANH__ = 0.04;
+vTAN_KmTANH__ has mM;
+vTAN_KeqTAN = 6.7;
+vTAN_KeqTAN has dimensionless;
+vTAN_KmTANI__ = 0.5;
+vTAN_KmTANI__ has mM;
+vUNI_VmUNI = 1088.71;
+vUNI_VmUNI has mMpermin;
+vUNI_KmUNII__ = 0.14;
+vUNI_KmUNII__ has mM;
+vUNI_KmUNIADP = 0.53;
+vUNI_KmUNIADP has mM;
+vUNI_KeqUNI = 6500;
+vUNI_KeqUNI has dimensionless;
+vUNI_KmUNIJ__ = 21;
+vUNI_KmUNIJ__ has mM;
+vUNI_KmUNIATP = 1.5;
+vUNI_KmUNIATP has mM;
+vVIC_VmVIC = 174.194;
+vVIC_VmVIC has mMpermin;
+vVIC_nVIC = 1.9;
+vVIC_nVIC has dimensionless;
+vVIC_KmVICJ__ = 4.33;
+vVIC_KmVICJ__ has mM;
+vWHI_KN__ = 21.4;
+vALP_VmXRA = 97.264;
+vALP_VmXRA has mmolepermin;
+vALP_KmXRAAo__ = 1.1918;
+vALP_KmXRAAo__ has mM;
+vALP_KeqXRA = 1;
+vALP_KeqXRA has mM;
+vALP_KmXRAAi__ = 1.1918;
+vALP_KmXRAAi__ has mM;
+vYAN_VmYAN = 810;
+vYAN_VmYAN has mMpermin;
+vYAN_KiYANNAD = 0.92;
+vYAN_KiYANNAD has mM;
+vYAN_KmYANL__ = 17;
+vYAN_KmYANL__ has mM;
+vYAN_KeqYAN = 6.9e-05;
+vYAN_KeqYAN has dimensionless;
+vYAN_KmYANNAD = 0.17;
+vYAN_KmYANNAD has mM;
+vYAN_KmYANNYAN = 0.11;
+vYAN_KmYANNYAN has mM;
+vYAN_KiYANNYAN = 0.031;
+vYAN_KiYANNYAN has mM;
+vYAN_KmYANK__ = 1.11;
+vYAN_KmYANK__ has mM;
+vYAN_KiYANK__ = 1.1;
+vYAN_KiYANK__ has mM;
+vYAN_KiYANL__ = 90;
+vYAN_KiYANL__ has mM;
+vZUL_VmZUL = 70.15;
+vZUL_VmZUL has mMpermin;
+vZUL_KmZULDHAP = 0.4;
+vZUL_KmZULDHAP has mM;
+vZUL_KmZULNYAN = 0.023;
+vZUL_KmZULNYAN has mM;
+vZUL_KeqZUL = 4300;
+vZUL_KeqZUL has dimensionless;
+vZUL_KmZULZ__ = 1;
+vZUL_KmZULZ__ has mM;
+vZUL_KmZULNAD = 0.93;
+vZUL_KmZULNAD has mM;
+vATP_KATPASE = 33.7;
+vATP_KATPASE has permin;
+
