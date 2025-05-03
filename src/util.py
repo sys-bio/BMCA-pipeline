@@ -314,9 +314,15 @@ def elasticity_to_CCC(BMCA, scaledE=None):
     return CxS, CJS
 
 def estimate_CCCs(BMCA_obj, Ex):
+    if isinstance(BMCA_obj.en, pd.DataFrame):
+        BMCA_obj.en = BMCA_obj.en.values
+    
+    if isinstance(BMCA_obj.vn, pd.DataFrame):
+        BMCA_obj.vn = BMCA_obj.vn.values
+
     BMCA_obj.vn[BMCA_obj.vn == 0] = 1e-6
     
-    a = np.diag(BMCA_obj.en.values / BMCA_obj.vn.values)
+    a = np.diag(BMCA_obj.en / BMCA_obj.vn)
     a = np.diag(a)
     a = a[np.newaxis,:].repeat(1000, axis=0)
 
@@ -338,9 +344,15 @@ def estimate_CCCs(BMCA_obj, Ex):
     return CCC.eval()
 
 def estimate_FCCs(BMCA_obj, Ex):
+    if isinstance(BMCA_obj.en, pd.DataFrame):
+        BMCA_obj.en = BMCA_obj.en.values
+    
+    if isinstance(BMCA_obj.vn, pd.DataFrame):
+        BMCA_obj.vn = BMCA_obj.vn.values
+
     BMCA_obj.vn[BMCA_obj.vn == 0] = 1e-6
     
-    a = np.diag(BMCA_obj.en.values / BMCA_obj.vn.values)
+    a = np.diag(BMCA_obj.en / BMCA_obj.vn)
     a = np.diag(a)
     a = a[np.newaxis,:].repeat(1000, axis=0)
 
@@ -790,11 +802,11 @@ def bootstrap_spearman(x, y, num_bootstrap=1000, alpha=0.05):
     return corr_original, p_value, lower_bound, upper_bound
 
 
-def get_az_summary(t): 
-    Ex_mean = az.summary(t)['mean'].reset_index()
-    Ex_mean.columns = ['elasticity', 'mean']
-    Ex_mean = Ex_mean[Ex_mean.elasticity.str.contains("Ex\[")]['mean'].values.flatten().reshape((-1,1))
-    return np.mean(Ex_mean, axis=1)
+def get_az_summary(t, elasticity='Ex'): 
+    elasticity_mean = az.summary(t)['mean'].reset_index()
+    elasticity_mean.columns = ['elasticity', 'mean']
+    elasticity_mean = elasticity_mean[elasticity_mean.elasticity.str.contains(f"{elasticity}\[")]['mean'].values.flatten().reshape((-1,1))
+    return np.mean(elasticity_mean, axis=1)
 
 
 def get_az_mean(traces): 
@@ -833,13 +845,19 @@ def calculate_FCC_med_rankings(postFCC, reaction, r):
     
 
 def run_prior_predictive(BMCA_obj):
-    ll = emll.LinLogLeastNorm(BMCA_obj.N, BMCA_obj.Ex.to_numpy(), BMCA_obj.Ey.to_numpy(), BMCA_obj.v_star, driver='gelsy')
+    if isinstance(BMCA_obj.Ex, pd.DataFrame):
+        BMCA_obj.en = BMCA_obj.Ex.values
     
+    if isinstance(BMCA_obj.Ey, pd.DataFrame):
+        BMCA_obj.vn = BMCA_obj.Ey.values
+    
+    ll = emll.LinLogLeastNorm(BMCA_obj.N, BMCA_obj.Ex, BMCA_obj.Ey, BMCA_obj.v_star, driver='gelsy')
+
     with pm.Model() as pymc_model:
         # Initialize elasticities
         # Ex and Ey have to be shape (rxns, mets)
-        Ex_t = pm.Deterministic('Ex', emll.util.initialize_elasticity(BMCA_obj.Ex.to_numpy().T, 'Ex'))
-        Ey_t = pm.Deterministic('Ey', emll.util.initialize_elasticity(BMCA_obj.Ey.to_numpy().T, 'Ey'))
+        Ex_t = pm.Deterministic('Ex', emll.util.initialize_elasticity(BMCA_obj.Ex.T, 'Ex'))
+        Ey_t = pm.Deterministic('Ey', emll.util.initialize_elasticity(BMCA_obj.Ey.T, 'Ey'))
 
         trace_prior = pm.sample_prior_predictive()
 
