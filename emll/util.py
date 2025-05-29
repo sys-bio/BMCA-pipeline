@@ -1,5 +1,6 @@
 import numpy as np
 import scipy as sp
+import pandas as pd
 
 def create_elasticity_matrix(model):
     """Create an elasticity matrix for internal metabolites given the model in model.
@@ -170,6 +171,9 @@ def initialize_elasticity(N, name=None, b=0.01, alpha=5, sd=1,
 
     # Guess an elasticity matrix from the smallbone approximation
     e_guess = -N.T
+
+    if isinstance(e_guess, pd.DataFrame):
+        e_guess = e_guess.to_numpy()
 
     # Find where the guessed E matrix has zero entries
     e_flat = e_guess.flatten()
