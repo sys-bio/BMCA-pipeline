@@ -100,6 +100,28 @@ def generate_data(model_file, perturbation_levels, data_folder, concurrent=1):
                                 writer.writerow(enzymes + exMet_values + spConc + fluxes)
                             except:
                                 pass
+            
+            # perturbed exMet cases
+            if cont:
+                if concurrent==1:
+                    for params in exMet:
+                        for level in perturbation_level:
+                            try: 
+                                r.resetToOrigin()
+                                r.setValue(params, level*r.getValue(params))
+                                
+                                r.simulate(0,100)
+                                r.steadyState()
+                                spConc = list(r.simulate(0,1000000)[-1])[1:]
+                                #spConc = list(r.simulate(0,100)[-1])[1:]
+                                
+                                enzymes = [r.getValue(e) for e in e_list]
+                                exMet_values = [r.getValue(m) for m in exMet]
+                                fluxes = list(r.getReactionRates())
+                                
+                                writer.writerow(enzymes + exMet_values + spConc + fluxes)
+                            except:
+                                pass
                 
 
 def ant_to_cobra(antimony_file):
@@ -317,8 +339,10 @@ def estimate_CCCs(BMCA_obj, Ex):
     if isinstance(BMCA_obj.en, pd.DataFrame):
         BMCA_obj.en = BMCA_obj.en.values
     
+    print(BMCA_obj.vn.shape)
     if isinstance(BMCA_obj.vn, pd.DataFrame):
         BMCA_obj.vn = BMCA_obj.vn.values
+    print(BMCA_obj.vn.shape)
 
     BMCA_obj.vn[BMCA_obj.vn == 0] = 1e-6
     
@@ -344,6 +368,11 @@ def estimate_CCCs(BMCA_obj, Ex):
     return CCC.eval()
 
 def estimate_FCCs(BMCA_obj, Ex):
+    if len(Ex.shape) == 3:
+        repeats = Ex.shape[0]
+    else:
+        repeats = 1
+    
     if isinstance(BMCA_obj.en, pd.DataFrame):
         BMCA_obj.en = BMCA_obj.en.values
     
@@ -354,12 +383,12 @@ def estimate_FCCs(BMCA_obj, Ex):
     
     a = np.diag(BMCA_obj.en / BMCA_obj.vn)
     a = np.diag(a)
-    a = a[np.newaxis,:].repeat(1000, axis=0)
+    a = a[np.newaxis,:].repeat(repeats, axis=0)
 
     Ex_ss = a @ Ex
     As = BMCA_obj.N @ np.diag(BMCA_obj.v_star) @ Ex_ss
     bs = BMCA_obj.N @ np.diag(BMCA_obj.v_star)
-    bs = bs[np.newaxis, :].repeat(1000, axis=0)
+    bs = bs[np.newaxis, :].repeat(repeats, axis=0)
     
     As = at.as_tensor_variable(As)
     bs = at.as_tensor_variable(bs)
@@ -372,7 +401,7 @@ def estimate_FCCs(BMCA_obj, Ex):
                         sequences=[As, bs], strict=True)
 
     identity = np.eye(len(BMCA_obj.N.T))
-    identity = identity[np.newaxis,:].repeat(1000, axis=0)
+    identity = identity[np.newaxis,:].repeat(repeats, axis=0)
     
     FCC = (Ex_ss @ CCC.eval()) + identity
     
@@ -846,10 +875,10 @@ def calculate_FCC_med_rankings(postFCC, reaction, r):
 
 def run_prior_predictive(BMCA_obj):
     if isinstance(BMCA_obj.Ex, pd.DataFrame):
-        BMCA_obj.en = BMCA_obj.Ex.values
+        BMCA_obj.Ex = BMCA_obj.Ex.values
     
     if isinstance(BMCA_obj.Ey, pd.DataFrame):
-        BMCA_obj.vn = BMCA_obj.Ey.values
+        BMCA_obj.Ey = BMCA_obj.Ey.values
     
     ll = emll.LinLogLeastNorm(BMCA_obj.N, BMCA_obj.Ex, BMCA_obj.Ey, BMCA_obj.v_star, driver='gelsy')
 
