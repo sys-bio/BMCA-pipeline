@@ -306,10 +306,16 @@ def elasticity_to_CCC(BMCA, scaledE=None):
 
     return CxS, CJS
 
-def estimate_CCs(BMCA_obj, Ex):
+def estimate_CCCs(BMCA_obj, Ex):
+    if isinstance(BMCA_obj.en, pd.DataFrame):
+        BMCA_obj.en = BMCA_obj.en.values
+    
+    if isinstance(BMCA_obj.vn, pd.DataFrame):
+        BMCA_obj.vn = BMCA_obj.vn.values
+
     BMCA_obj.vn[BMCA_obj.vn == 0] = 1e-6
     
-    a = np.diag(BMCA_obj.en.values / BMCA_obj.vn.values)
+    a = np.diag(BMCA_obj.en / BMCA_obj.vn)
     a = np.diag(a)
     a = a[np.newaxis,:].repeat(1000, axis=0)
 
@@ -322,9 +328,41 @@ def estimate_CCs(BMCA_obj, Ex):
     bs = at.as_tensor_variable(bs)
 
     def solve_pytensor(A, b):
-        os.chdir('..')
-        from emll.pytensor_utils import LeastSquaresSolve
-        os.chdir('src')
+        rsolve_op = LeastSquaresSolve()
+        return rsolve_op(A, b).squeeze()
+
+    CCC, _ = pytensor.scan(lambda A, b: solve_pytensor(A, b),
+                        sequences=[As, bs], strict=True)
+
+    return CCC.eval()
+
+def estimate_FCCs(BMCA_obj, Ex):
+    if len(Ex.shape) == 3:
+        repeats = Ex.shape[0]
+    else:
+        repeats = 1
+    
+    if isinstance(BMCA_obj.en, pd.DataFrame):
+        BMCA_obj.en = BMCA_obj.en.values
+    
+    if isinstance(BMCA_obj.vn, pd.DataFrame):
+        BMCA_obj.vn = BMCA_obj.vn.values
+
+    BMCA_obj.vn[BMCA_obj.vn == 0] = 1e-6
+    
+    a = np.diag(BMCA_obj.en / BMCA_obj.vn)
+    a = np.diag(a)
+    a = a[np.newaxis,:].repeat(repeats, axis=0)
+
+    Ex_ss = a @ Ex
+    As = BMCA_obj.N @ np.diag(BMCA_obj.v_star) @ Ex_ss
+    bs = BMCA_obj.N @ np.diag(BMCA_obj.v_star)
+    bs = bs[np.newaxis, :].repeat(repeats, axis=0)
+    
+    As = at.as_tensor_variable(As)
+    bs = at.as_tensor_variable(bs)
+
+    def solve_pytensor(A, b):
         rsolve_op = LeastSquaresSolve()
         return rsolve_op(A, b).squeeze()
 
@@ -332,11 +370,13 @@ def estimate_CCs(BMCA_obj, Ex):
                         sequences=[As, bs], strict=True)
 
     identity = np.eye(len(BMCA_obj.N.T))
-    identity = identity[np.newaxis,:].repeat(1000, axis=0)
+    identity = identity[np.newaxis,:].repeat(repeats, axis=0)
     
     FCC = (Ex_ss @ CCC.eval()) + identity
     
-    return CCC.eval(), FCC
+    # return CCC.eval(), FCC
+    return FCC
+
 
 def calculate_e_hat(BMCA_obj, v_hat_obs, x_terms, y_terms): 
     one_n = np.ones([len(x_terms.eval()),len(BMCA_obj.en)])
@@ -800,8 +840,8 @@ def run_prior_predictive(BMCA_obj):
     with pm.Model() as pymc_model:
         # Initialize elasticities
         # Ex and Ey have to be shape (rxns, mets)
-        Ex_t = pm.Deterministic('Ex', emll.util.initialize_elasticity(BMCA_obj.Ex.to_numpy().T, 'Ex', b=0.05, sd=1, alpha=5))
-        Ey_t = pm.Deterministic('Ey', emll.util.initialize_elasticity(BMCA_obj.Ey.to_numpy().T, 'Ey', b=0.05, sd=1, alpha=5))
+        Ex_t = pm.Deterministic('Ex', emll.util.initialize_elasticity(BMCA_obj.Ex.to_numpy().T, 'Ex', b=0.05, sigma=1, alpha=5))
+        Ey_t = pm.Deterministic('Ey', emll.util.initialize_elasticity(BMCA_obj.Ey.to_numpy().T, 'Ey', b=0.05, sigma=1, alpha=5))
 
         trace_prior = pm.sample_prior_predictive()
 
