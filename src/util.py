@@ -29,6 +29,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import arviz as az
 
+SEED = 1
+np.random.seed(SEED)
 
 def generate_data(model_file, perturbation_levels, data_folder, concurrent=1):
     """
@@ -339,10 +341,8 @@ def estimate_CCCs(BMCA_obj, Ex):
     if isinstance(BMCA_obj.en, pd.DataFrame):
         BMCA_obj.en = BMCA_obj.en.values
     
-    print(BMCA_obj.vn.shape)
     if isinstance(BMCA_obj.vn, pd.DataFrame):
         BMCA_obj.vn = BMCA_obj.vn.values
-    print(BMCA_obj.vn.shape)
 
     BMCA_obj.vn[BMCA_obj.vn == 0] = 1e-6
     
@@ -888,7 +888,7 @@ def run_prior_predictive(BMCA_obj):
         Ex_t = pm.Deterministic('Ex', emll.util.initialize_elasticity(BMCA_obj.Ex.T, 'Ex'))
         Ey_t = pm.Deterministic('Ey', emll.util.initialize_elasticity(BMCA_obj.Ey.T, 'Ey'))
 
-        trace_prior = pm.sample_prior_predictive()
+        trace_prior = pm.sample_prior_predictive(random_seed=SEED)
 
     return trace_prior
 
