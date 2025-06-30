@@ -3,8 +3,8 @@ import nbformat
 
 # Set parameters
 target_directory = "./notebooks"
-match_line = "trace_prior = pm.sample_prior_predictive(random_seed=SEED)"
-replacement_lines = ["        trace_prior = pm.sample_prior_predictive(random_seed=SEED)"]
+match_line = "ppc_vi = pm.sample_posterior_predictive(trace, random_seed=random_range)"
+replacement_lines = ["        ppc_vi = pm.sample_posterior_predictive(trace, random_seed=SEED)"]
 
 def process_notebook(filepath):
     print(f"\nChecking: {filepath}")
