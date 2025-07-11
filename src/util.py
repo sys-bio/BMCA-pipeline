@@ -31,6 +31,7 @@ import arviz as az
 
 SEED = 1
 np.random.seed(SEED)
+random.seed(SEED)
 
 def generate_data(model_file, perturbation_levels, data_folder, concurrent=1):
     """
