@@ -137,7 +137,6 @@ class antemll():
             r.conservedMoietyAnalysis = True
             model = cobra.io.read_sbml_model(cobra_smbl)
             # model = cobra.io.read_sbml_model("../../models/sbml/Simplified_Teusink_yeast_cobra.xml")
-            # model = cobra.io.read_sbml_model("../../../models/sbml/JSexample22_cobra.xml")
 
             n_metabolites = len(model.metabolites)
             n_reactions = len(model.reactions)
